@@ -1,4 +1,5 @@
 local p = {}
+
 function p.base(f)
 	local args = f
 	if f == mw.getCurrentFrame() then

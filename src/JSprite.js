@@ -75,7 +75,7 @@ function tooltipReady() {
     }
 }
 
-function Capitalize(text) {
+function capitalize(text) {
     if (text) {
         var tokens = text.replace(/(\_|\-)/g, ' ').split(' ');
         tokens = tokens.map(function (token) {
@@ -284,7 +284,7 @@ function eachTarget() {
                     'data-mine-tooltip': tooltipopt,
                     title:
                         option.title ||
-                        (option.nocap ? option.id : Capitalize(option.id)),
+                        (option.nocap ? option.id : capitalize(option.id)),
                 });
             }
 
@@ -376,7 +376,7 @@ function eachTarget() {
                                 title:
                                     option.title || option.nocap
                                         ? option.id
-                                        : Capitalize(option.id),
+                                        : capitalize(option.id),
                             });
                         }
                         option.target.after(sprite);
@@ -643,7 +643,7 @@ function createDoc() {
 
                 var spritenames = sprite_box.find('ul');
                 var codeElm = $('<code />', {
-                    text: sheet !== 'InvSprite' ? key : Capitalize(key),
+                    text: sheet !== 'InvSprite' ? key : capitalize(key),
                 });
                 spritenames.append(
                     $('<li />', { class: 'spritedoc-name' }).append(codeElm)
