@@ -38,8 +38,8 @@
 ```js
 // URLを指定してスクリプトを読み込む
 mw.loader.load(
-    "//minecraftjapan.miraheze.org/w/index.php?title=MediaWiki:Gadget-JSprite.js&action=raw&ctype=text/javascript"
-)
+    '//minecraftjapan.miraheze.org/w/index.php?title=MediaWiki:Gadget-JSprite.js&action=raw&ctype=text/javascript'
+);
 ```
 
 ### その他の方法
@@ -60,4 +60,4 @@ _Wiki ページの[編集履歴](https://minecraftjapan.miraheze.org/wiki/MediaW
 
 このガジェットは、Minecraft Wiki の[`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite)と互換性を保つように作成されました。
 
-![クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg "CC BY-SA-NC 4.0")
+![クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC BY-SA-NC 4.0')

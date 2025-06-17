@@ -37,8 +37,8 @@ Or you can use scripts placed on other pages by loading them from `common.js`.
 ```js
 // Load a script by specifying a page URL
 mw.loader.load(
-    "//minecraftjapan.miraheze.org/w/index.php?title=MediaWiki:Gadget-JSprite.js&action=raw&ctype=text/javascript"
-)
+    '//minecraftjapan.miraheze.org/w/index.php?title=MediaWiki:Gadget-JSprite.js&action=raw&ctype=text/javascript'
+);
 ```
 
 ### Other options
@@ -59,4 +59,4 @@ All content in this repository is licensed under [Creative Commons Attribution-N
 
 This gadget was created to be compatible with [`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite) on the Minecraft Wiki.
 
-![Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg "CC BY-SA-NC 4.0")
+![Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC BY-SA-NC 4.0')
