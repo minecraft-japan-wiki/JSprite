@@ -50,7 +50,7 @@ See also "[`Wikipedia:User scripts`](https://en.wikipedia.org/wiki/Wikipedia:Use
 
 _Please also check the [edit history](https://minecraftjapan.miraheze.org/wiki/MediaWiki:Gadget-JSprite.js?action=history) of the wiki page._
 
--   Pneuma - [`User:Pneuma`](https://minecraftjapan.miraheze.org/wiki/User:Pneuma)
+-   [Urushibara](https://github.com/Urushibara) - [`User:Pneuma`](https://minecraftjapan.miraheze.org/wiki/User:Pneuma)
 -   [shumm7](https://github.com/shumm7) - [`User:Shulmj`](https://minecraftjapan.miraheze.org/wiki/User:Shulmj)
 
 ## License
