@@ -31,10 +31,10 @@ function prepareSpriteRendering() {
                 JSONData[data.name] = data.json;
             });
         }).then(()=>{
-        	applyContents();
+        	renderAllSpriteElements();
         });
     } else {
-        applyContents();
+        renderAllSpriteElements();
     }
 }
 
@@ -108,11 +108,11 @@ function renderElement( element ) {
 		promise.then(function (data) {
 	        JSONData[data.name] = data.json;
 	    }).then(()=>{
-		    applyContents();
+		    renderAllSpriteElements();
 	        if(element) $( element ).each(renderSpriteElement);
 	    });
 	} else {
-        applyContents();
+        renderAllSpriteElements();
         if(element) $( element ).each(renderSpriteElement);
     }
 }
