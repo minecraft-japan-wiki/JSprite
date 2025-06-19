@@ -51,7 +51,7 @@ mw.loader.load(
 
 _Wiki ページの[編集履歴](https://minecraftjapan.miraheze.org/wiki/MediaWiki:Gadget-JSprite.js?action=history)もご確認ください。_
 
--   Pneuma - [`User:Pneuma`](https://minecraftjapan.miraheze.org/wiki/User:Pneuma)
+-   [Urushibara](https://github.com/Urushibara) - [`User:Pneuma`](https://minecraftjapan.miraheze.org/wiki/User:Pneuma)
 -   [shumm7](https://github.com/shumm7) - [`User:Shulmj`](https://minecraftjapan.miraheze.org/wiki/User:Shulmj)
 
 ## ライセンス
