@@ -55,8 +55,8 @@ _Please also check the [edit history](https://minecraftjapan.miraheze.org/wiki/M
 
 ## License
 
-All content in this repository is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-SA-NC 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en), the same license as the Minecraft Japan Wiki.
+All content in this repository is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA-4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en), the same license as the Minecraft Japan Wiki.
 
 This gadget was created to be compatible with [`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite) on the Minecraft Wiki.
 
-![Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC BY-SA-NC 4.0')
+![Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA-4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC-BY-NC-SA-4.0')

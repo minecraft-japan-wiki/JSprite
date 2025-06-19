@@ -56,8 +56,8 @@ _Wiki ページの[編集履歴](https://minecraftjapan.miraheze.org/wiki/MediaW
 
 ## ライセンス
 
-このリポジトリ内のすべてのコンテンツは、[クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC BY-SA-NC 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja)で提供されています。これは Minecraft Japan Wiki で用いられているライセンスと同じです。
+このリポジトリ内のすべてのコンテンツは、[クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC-BY-NC-SA-4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja)で提供されています。これは Minecraft Japan Wiki で用いられているライセンスと同じです。
 
 このガジェットは、Minecraft Wiki の[`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite)と互換性を保つように作成されました。
 
-![クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC BY-SA-NC 4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC BY-SA-NC 4.0')
+![クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC-BY-NC-SA-4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC-BY-NC-SA-4.0')
