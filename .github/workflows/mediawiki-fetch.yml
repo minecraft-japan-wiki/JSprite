@@ -2,6 +2,9 @@ name: MediaWiki fetch
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - main
 
 jobs:
   post:
