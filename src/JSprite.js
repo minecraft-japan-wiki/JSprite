@@ -508,7 +508,7 @@ function createDocument() {
     if (!data.settings) data.settings = {};
     data.settings.width = data.settings.width || data.settings.size || 16;
     data.settings.height = data.settings.height || data.settings.size || 16;
-    data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings["sheet-size"];
+    data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings["sheetsize"];
     data.settings.scale = data.settings.scale || 1;
 
     if (data.Irregular_files) {
@@ -556,7 +556,7 @@ function createDocument() {
                     "data-pos": value.pos
                 }).appendTo(sections[value.section]);
 
-                var sprite = $("<span />", { "class": "sprite " });
+                var sprite = $("<span />", { "class": "sprite" });
                 var pos = value.pos - 1;
 
                 var holizontal_count = data.settings["sheet-width"] / data.settings.width;
