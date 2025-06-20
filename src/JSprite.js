@@ -61,7 +61,7 @@ function setupVESpriteHooks() {
                                 $this.on("rerender", () => { renderElement(this); });
                             });
                         }
-                    } catch {
+                    } catch (e) {
                     }
                 }
 
