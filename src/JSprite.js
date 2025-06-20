@@ -21,8 +21,8 @@ function prepareSpriteRendering() {
 
     var promises = [];
     sprite_elements.forEach(function (element) {
-    	var promise = loadSpriteData(element);
-        if( promise !== undefined ) promises.push(promise);
+        var promise = loadSpriteData(element);
+        if (promise !== undefined) promises.push(promise);
     });
 
     if (promises.length) {
@@ -30,8 +30,8 @@ function prepareSpriteRendering() {
             resolves.forEach(function (data) {
                 JSONData[data.name] = data.json;
             });
-        }).then(()=>{
-        	renderAllSpriteElements();
+        }).then(() => {
+            renderAllSpriteElements();
         });
     } else {
         renderAllSpriteElements();
@@ -42,33 +42,33 @@ function prepareSpriteRendering() {
  * Enables sprite rendering within VisualEditor (VE) transclusion nodes.
  * @returns {void}
  */
-function setupVESpriteHooks(){
-    mw.hook( 've.activationComplete' ).add( () => {
-        mw.loader.using( [ 'ext.visualEditor.core', 'ext.visualEditor.mwtransclusion' ] ).then( () => {
+function setupVESpriteHooks() {
+    mw.hook('ve.activationComplete').add(() => {
+        mw.loader.using(['ext.visualEditor.core', 'ext.visualEditor.mwtransclusion']).then(() => {
             const origFunc = ve.ce.MWTransclusionNode.prototype.afterRender;
-            
-            ve.ce.MWTransclusionNode.prototype.afterRender = function ( ) {
-                
-                if(this.type === "mwTransclusionInline"){
-                    try{
-                        if( this.$element.hasClass("jsprite") ){
+
+            ve.ce.MWTransclusionNode.prototype.afterRender = function () {
+
+                if (this.type === "mwTransclusionInline") {
+                    try {
+                        if (this.$element.hasClass("jsprite")) {
                             var element = this.$element.toArray()[0];
-                            this.on("rerender", ()=>{ renderElement( element ); });
+                            this.on("rerender", () => { renderElement(element); });
                         }
-                        if( this.$element.find(".jsprite").length>0 ) {
+                        if (this.$element.find(".jsprite").length > 0) {
                             const $this = this;
-                            this.$element.find(".jsprite").each(function(){
-                                $this.on("rerender", ()=>{ renderElement( this ); });
+                            this.$element.find(".jsprite").each(function () {
+                                $this.on("rerender", () => { renderElement(this); });
                             });
                         }
-                    }catch{
+                    } catch {
                     }
                 }
-                
-                return origFunc.apply( this, arguments );
+
+                return origFunc.apply(this, arguments);
             };
         });
-    } );
+    });
 }
 
 /**
@@ -82,38 +82,38 @@ function setupVESpriteHooks(){
  * @returns {Promise<{name: string; json: any;}>|undefined} A Promise resolving to the parsed JSON data if loading is triggered,
  *   or `undefined` if the sheet is already loaded or the element is invalid.
  */
-function loadSpriteData( element ){
-	const path = mw.config.get('wgScriptPath') + '/index.php?';
+function loadSpriteData(element) {
+    const path = mw.config.get('wgScriptPath') + '/index.php?';
 
-	if(element){
-		var sheet = element.getAttribute("data-sheet");
-	    if (!JSONData.hasOwnProperty(sheet)) {
-	        JSONData[sheet] = {};
-	        return loadJSON(sheet, path +
-	            "title=" + encodeURIComponent("MediaWiki:" + sheet + ".json") + "&" +
-	            "action=raw&" +
-	            "ctype=" + encodeURIComponent("application/json")
-	        );
-	    }
-	}
+    if (element) {
+        var sheet = element.getAttribute("data-sheet");
+        if (!JSONData.hasOwnProperty(sheet)) {
+            JSONData[sheet] = {};
+            return loadJSON(sheet, path +
+                "title=" + encodeURIComponent("MediaWiki:" + sheet + ".json") + "&" +
+                "action=raw&" +
+                "ctype=" + encodeURIComponent("application/json")
+            );
+        }
+    }
 }
 
 /**
  * Renders an element by loading and applying associated sprite data.
  * @param {Element|Element[]} element - The DOM element or elements to be rendered.
  */
-function renderElement( element ) {
-	var promise = loadSpriteData( element );
-	if( promise !== undefined ){
-		promise.then(function (data) {
-	        JSONData[data.name] = data.json;
-	    }).then(()=>{
-		    renderAllSpriteElements();
-	        if(element) $( element ).each(renderSpriteElement);
-	    });
-	} else {
+function renderElement(element) {
+    var promise = loadSpriteData(element);
+    if (promise !== undefined) {
+        promise.then(function (data) {
+            JSONData[data.name] = data.json;
+        }).then(() => {
+            renderAllSpriteElements();
+            if (element) $(element).each(renderSpriteElement);
+        });
+    } else {
         renderAllSpriteElements();
-        if(element) $( element ).each(renderSpriteElement);
+        if (element) $(element).each(renderSpriteElement);
     }
 }
 
@@ -123,7 +123,7 @@ function renderElement( element ) {
  */
 function renderAllSpriteElements() {
     $(".jsprite").each(renderSpriteElement);
-    
+
     //// for document ////
     if (document.querySelector("#jsprite-doc")) {
         createDocument.call(document.querySelector("#jsprite-doc"));
@@ -175,15 +175,15 @@ function renderSpriteElement() {
     }
 
     function makeSprite(data, option) {
-    	if (data.settings === undefined) data.settings = {};
-    	if (data.ids === undefined) data.ids = {};
+        if (data.settings === undefined) data.settings = {};
+        if (data.ids === undefined) data.ids = {};
         if (option.target && option.target.attr("data-done") !== undefined) return;
 
         var isVEenabled = (window.ve && ve.init && ve.init.target && ve.init.target.active);
-	
-		data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings.sheetsize;
-		data.settings.width = data.settings.width || data.settings.size || 16;
-		data.settings.height = data.settings.height || data.settings.size || 16;
+
+        data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings.sheetsize;
+        data.settings.width = data.settings.width || data.settings.size || 16;
+        data.settings.height = data.settings.height || data.settings.size || 16;
         data.settings.scale = data.settings.scale || 1;
 
         Object.keys(data.settings).forEach(function (key) {
@@ -193,31 +193,31 @@ function renderSpriteElement() {
         var scale = option.scale || 1;
         var id = option.id;
         let hasIrregularFiles = false;
-        
-        if (id && data.hasOwnProperty("Irregular_files")){
-        	if (data.Irregular_files.hasOwnProperty(id)) {
-        		hasIrregularFiles = true;
-	        }else{
-            	id = id.toLowerCase();
-            	if (data.Irregular_files.hasOwnProperty(id)) {
-        			hasIrregularFiles = true;
-		        }else{
-	            	id = id.replaceAll(" ", "-");
-	            	if (data.Irregular_files.hasOwnProperty(id)) {
-	        			hasIrregularFiles = true;
-			        }
-		        }
-	        }
+
+        if (id && data.hasOwnProperty("Irregular_files")) {
+            if (data.Irregular_files.hasOwnProperty(id)) {
+                hasIrregularFiles = true;
+            } else {
+                id = id.toLowerCase();
+                if (data.Irregular_files.hasOwnProperty(id)) {
+                    hasIrregularFiles = true;
+                } else {
+                    id = id.replaceAll(" ", "-");
+                    if (data.Irregular_files.hasOwnProperty(id)) {
+                        hasIrregularFiles = true;
+                    }
+                }
+            }
         }
-        
+
         if (!hasIrregularFiles) {
-        	id = option.id;
-        	if (id && !data.ids[id]){
-        		id = id.toLowerCase();
-	            if (!data.ids[id]) {
-	                id = id.replaceAll(" ", "-");
-	            }
-        	}
+            id = option.id;
+            if (id && !data.ids[id]) {
+                id = id.toLowerCase();
+                if (!data.ids[id]) {
+                    id = id.replaceAll(" ", "-");
+                }
+            }
         }
 
         if (id && data.ids[id] && !hasIrregularFiles) {
@@ -301,7 +301,7 @@ function renderSpriteElement() {
                 }
 
                 if (!url && option.sheet) {
-                    url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get( 'wgArticlePath' ));
+                    url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get('wgArticlePath'));
                 }
 
                 sprite.css({ "background-image": "url(" + url + ")" });
@@ -326,7 +326,7 @@ function renderSpriteElement() {
             } else {
                 if (isVEenabled) {
                     option.target.empty();
-                    option.target.append( sprite );
+                    option.target.append(sprite);
                     option.target.css({ width: "auto", height: "auto" });
                     option.target.attr("data-done", "");
                 } else {
@@ -339,21 +339,21 @@ function renderSpriteElement() {
         }
 
         else {
-			var filename;
+            var filename;
             var isExists = hasIrregularFiles;
             if (isExists) {
-            	filename = data.Irregular_files[id];
+                filename = data.Irregular_files[id];
             } else {
-				var title = new mw.Title( option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get( 'wgNamespaceIds' ).file);
-				isExists = title.exists();
-				if (isExists){
-					filename = title.getPrefixedText();
-				}
-			}
+                var title = new mw.Title(option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get('wgNamespaceIds').file);
+                isExists = title.exists();
+                if (isExists) {
+                    filename = title.getPrefixedText();
+                }
+            }
 
             if (isExists) {
-                getURL( filename ).then( function( url ){
-                    if ( url ){
+                getURL(filename).then(function (url) {
+                    if (url) {
                         var sprite = $("<img>", {
                             "src": url,
                             "width": option.width * scale,
@@ -370,7 +370,7 @@ function renderSpriteElement() {
                         //option.target.hide();
                         option.target.css({ width: "auto", height: "auto" });
                         option.target.empty();
-		                option.target.append(sprite);
+                        option.target.append(sprite);
                         option.target.attr("data-done", "");
                     } else {
                         if (id && id != "blank" && id.length > 0) {
@@ -378,13 +378,13 @@ function renderSpriteElement() {
                                 .attr("data-mine-tooltip", "")
                                 .attr("title", option.title || option.id);
                         }
-		                var spr = $("<span/>", {"class": "sprite"} );
-		                renderFallbackSprite(spr, option);
+                        var spr = $("<span/>", { "class": "sprite" });
+                        renderFallbackSprite(spr, option);
                         option.target.css({ width: "auto", height: "auto" });
                         option.target.empty();
-		                option.target.append(spr);
+                        option.target.append(spr);
                     }
-        			tooltipQueue();
+                    tooltipQueue();
                 });
 
             } else {
@@ -393,7 +393,7 @@ function renderSpriteElement() {
                         .attr("data-mine-tooltip", "")
                         .attr("title", option.title || option.id);
                 }
-                var spr = $("<span/>", {"class": "sprite"} );
+                var spr = $("<span/>", { "class": "sprite" });
                 renderFallbackSprite(spr, option);
                 option.target.css({ width: "auto", height: "auto" });
                 option.target.empty();
@@ -411,13 +411,13 @@ function renderSpriteElement() {
  * @param {Object} option - Sprite rendering options, typically parsed from `data-*` attributes.
  * @returns {JQuery<HTMLElement>} The styled `sprite` element.
  */
-function renderFallbackSprite( sprite, option ) {
+function renderFallbackSprite(sprite, option) {
     var pos = option.pos - 1 || 0;
     var sheetWidth = option["sheet-width"] || option.sheetsize;
     var width = option.width || option.size || 16;
     var height = option.height || option.size || 16;
     var scale = option.scale || 1;
-    
+
     var holizontal_count = sheetWidth / width;
     var position = {
         x: (pos % holizontal_count) * width,
@@ -430,15 +430,15 @@ function renderFallbackSprite( sprite, option ) {
         "background-position": "-" + (position.x * scale) + "px -" + (position.y * scale) + "px"
     });
 
-    if ( option.classname) {
-        sprite.addClass( option.classname );
+    if (option.classname) {
+        sprite.addClass(option.classname);
     } else {
         var url = option.image;
 
         if (!url) {
-            getURL( option.sheet + ".png" ).then( function( url ){
-                if( !url ) {
-                    url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get( 'wgArticlePath' ));
+            getURL(option.sheet + ".png").then(function (url) {
+                if (!url) {
+                    url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get('wgArticlePath'));
                 }
                 sprite.css({ "background-image": "url(" + url + ")" });
             });
@@ -503,9 +503,9 @@ function createDocument() {
         );
         toc_childnum++;
     });
-    
+
     // settings
-    if(!data.settings) data.settings = {};
+    if (!data.settings) data.settings = {};
     data.settings.width = data.settings.width || data.settings.size || 16;
     data.settings.height = data.settings.height || data.settings.size || 16;
     data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings["sheet-size"];
@@ -620,11 +620,11 @@ function createDocument() {
                 )
             );
 
-            getURL( data.Irregular_files[key] ).then( function( url ){
-                if ( url ){
+            getURL(data.Irregular_files[key]).then(function (url) {
+                if (url) {
                     sprite.css({ "background-image": "url(" + url + ")" });
                 } else {
-                    renderFallbackSprite( sprite, data.settings );
+                    renderFallbackSprite(sprite, data.settings);
                 }
             });
 
@@ -659,7 +659,7 @@ function loadJSON(name, filename) {
                 if (xhr.readyState === xhr.DONE) {
                     if (xhr.status === 200) {
                         try {
-                        	var responseText = xhr.responseText;
+                            var responseText = xhr.responseText;
                             var json = JSON.parse(responseText);
                             if (typeof json.ids === "object") {
                                 var key, keys = Object.keys(json.ids);
@@ -753,31 +753,33 @@ function capitalize(text) {
  * @param {number} [retries=1] - Maximum number of retries.
  * @returns {jQuery.Promise} A promise that resolves or rejects with the final result. The returned promise also supports an `abort()` method to cancel the request.
  */
-function retryableRequest( request, delay, retries ) {
-	var deferred = $.Deferred();
-	var curRequest;
-	var timeout;
-	retries = retries || 1;
-	var attemptRequest = function( attempt ) {
-		( curRequest = request() ).then( deferred.resolve, function( code, data ) {
-			if ( attempt <= retries ) {
-				timeout = setTimeout( function() {
-					attemptRequest( ++attempt );
-				}, delay || 1000 );
-			} else {
-				deferred.reject( code, data );
-			}
-			
-		} );
-	};
-	attemptRequest( 1 );
-	
-	return deferred.promise( { abort: function() {
-		if ( curRequest.abort ) {
-			curRequest.abort();
-		}
-		clearTimeout( timeout );
-	} } );
+function retryableRequest(request, delay, retries) {
+    var deferred = $.Deferred();
+    var curRequest;
+    var timeout;
+    retries = retries || 1;
+    var attemptRequest = function (attempt) {
+        (curRequest = request()).then(deferred.resolve, function (code, data) {
+            if (attempt <= retries) {
+                timeout = setTimeout(function () {
+                    attemptRequest(++attempt);
+                }, delay || 1000);
+            } else {
+                deferred.reject(code, data);
+            }
+
+        });
+    };
+    attemptRequest(1);
+
+    return deferred.promise({
+        abort: function () {
+            if (curRequest.abort) {
+                curRequest.abort();
+            }
+            clearTimeout(timeout);
+        }
+    });
 }
 
 /**
@@ -789,27 +791,27 @@ function retryableRequest( request, delay, retries ) {
  * @param {string} filename - The file name, with or without the "File:" prefix.
  * @returns {jQuery.Promise<string>} A promise that resolves to the file's direct URL, or an empty string on failure.
  */
-function getURL(filename){
+function getURL(filename) {
     filename = filename.replaceAll(" ", "_");
-    if(filename.indexOf("File:") != 0){
+    if (filename.indexOf("File:") != 0) {
         filename = "File:" + filename;
     }
-    return retryableRequest( function() {
-		return new mw.Api().get( {
+    return retryableRequest(function () {
+        return new mw.Api().get({
             action: 'query',
             titles: filename,
             prop: 'imageinfo',
             iiprop: 'url'
         });
-    }).then(function( data ){
-        if(data){
+    }).then(function (data) {
+        if (data) {
             var pageid = Object.keys(data.query.pages)[0];
-            if (pageid > -1){
-                return data.query.pages[ pageid ].imageinfo[0].url;
+            if (pageid > -1) {
+                return data.query.pages[pageid].imageinfo[0].url;
             }
         }
         return "";
-    }).fail(function(){
+    }).fail(function () {
         return "";
     });
 }
