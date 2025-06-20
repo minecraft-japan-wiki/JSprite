@@ -58,7 +58,7 @@ function setupVESpriteHooks() {
                         if (this.$element.find(".jsprite").length > 0) {
                             const $this = this;
                             this.$element.find(".jsprite").each(function () {
-                                $this.on("rerender", () => { renderElement(this); });
+                                $this.on("rerender", () => { renderElement(this) });
                             });
                         }
                     } catch (e) {
