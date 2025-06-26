@@ -1,62 +1,63 @@
 <table>
-	<thead>
-    	<tr>
-      		<th style="text-align:center">English (en)</th>
-      		<th style="text-align:center"><a href="README.ja.md">日本語 (ja)</a></th>
-    	</tr>
-  	</thead>
+    <thead>
+        <tr>
+            <th style="text-align:center"><a href="README.en.md">English (en)</a></th>
+            <th style="text-align:center">日本語 (ja)</th>
+        </tr>
+    </thead>
 </table>
 
-**_For detailed documentation, see [`Project:ガジェット/JSprite`](https://minecraftjapan.miraheze.org/wiki/Project:ガジェット/JSprite)._**
+**_より詳細なドキュメントは、[`Project:ガジェット/JSprite`](https://minecraftjapan.miraheze.org/wiki/Project:ガジェット/JSprite)を参照してください。_**
 
 # Gadget-JSprite
 
-MediaWiki Gadget for displaying sprites on a page.
+ページ上にスプライトを表示するための MediaWiki 用ガジェット（Gadget）。
 
-## Introduction
+## 概要
 
-This [Gadget](https://www.mediawiki.org/wiki/Extension:Gadgets) allows you to display sprites on the [Minecraft Japan Wiki](https://minecraftjapan.miraheze.org/wiki/Minecraft_Japan_Wiki) (MJW) via JavaScript. Sprites allow you to include images of Minecraft blocks and items on articles.
+この[ガジェット (Gadget)](https://www.mediawiki.org/wiki/Extension:Gadgets)は、[Minecraft Japan Wiki](https://minecraftjapan.miraheze.org/wiki/Minecraft_Japan_Wiki) 上において、JavaScript を用いたスプライト表示を行います。  
+このようなスプライトを用いることで、記事中に Minecraft のブロックやアイテムの画像を表示することができます。
 
-Originally, MJW used a fork of the [Scribunto](https://www.mediawiki.org/wiki/Extension:Scribunto) (Lua) module [`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite) that was used on the Minecraft Wiki.  
-However, there was a problem with articles that used a large number of sprites, as they would exceed the page size limit.  
-Therefore, `JSprite` ("JS" + "Sprite") contributes to reducing page size by performing most of the sprite drawing process in JavaScript.  
-Currently, it is used for some large sprites (e.g. ItemSprite, BlockSprite, InvSprite).
+もともと、当ウィキでは Minecraft Wiki で使用されていた[`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite)という[Scribunto](https://www.mediawiki.org/wiki/Extension:Scribunto) (Lua) モジュールのフォーク版を使用していました。  
+しかし、このモジュールを使用した場合、スプライトを大量に使用した記事ではページサイズ制限を超過してしまうという問題がありました。  
+その解決策として、`JSprite` ("JS" + "Sprite") を利用することで、スプライト描画処理の多くを JavaScript 上で行うことが可能になり、ページサイズの削減に貢献しています。
+現時点では、一部の大きなスプライト (ItemSprite、BlockSprite、InvSprite など) で使用されています。
 
-## Usage
+## 使用方法
 
-### Gadget
+### ガジェット
 
-This gadget is enabled by default on the Minecraft Japan Wiki.  
-Logged-in users can disable it in [Preferences](https://minecraftjapan.miraheze.org/wiki/Special:Preferences#mw-prefsection-gadgets).
+このガジェットは、全利用者に対して既定で有効化されています。  
+ログイン利用者は、[個人設定](https://minecraftjapan.miraheze.org/wiki/Special:Preferences#mw-prefsection-gadgets)で無効にすることもできます。
 
 ### Common.js
 
-You can also enable scripts by placing the code in your own [`common.js`](https://minecraftjapan.miraheze.org/wiki/Special:MyPage/common.js).  
-Or you can use scripts placed on other pages by loading them from `common.js`.
+自身の [`common.js`](https://minecraftjapan.miraheze.org/wiki/Special:MyPage/common.js) にコードを配置することでもスクリプトを有効化することができます。  
+また、他のページに配置されたスクリプトを `common.js` から読み込むこともできます。
 
 ```js
-// Load a script by specifying a page URL
+// URLを指定してスクリプトを読み込む
 mw.loader.load(
     '//minecraftjapan.miraheze.org/w/index.php?title=MediaWiki:Gadget-JSprite.js&action=raw&ctype=text/javascript'
 );
 ```
 
-### Other options
+### その他の方法
 
-Your browser may be able to execute JavaScript code in Gadgets via Browser Extensions; e.g.[Greasemonkey](https://github.com/greasemonkey/greasemonkey).  
-See also "[`Wikipedia:User scripts`](https://en.wikipedia.org/wiki/Wikipedia:User_scripts)" on Wikipedia, or "[`Gadget kitchen`](https://www.mediawiki.org/wiki/Gadget_kitchen)" on MediaWiki.
+[Greasemonkey](https://github.com/greasemonkey/greasemonkey)などのブラウザ拡張機能を使用して、ガジェット内の JavaScript コードを実行できる場合があります。  
+詳細は Wikipedia の [`Wikipedia:User scripts`](https://en.wikipedia.org/wiki/Wikipedia:User_scripts) か、MediaWiki の [`Gadget kitchen`](https://www.mediawiki.org/wiki/Gadget_kitchen) をご確認ください。
 
-## Contributions
+## コントリビューター
 
-_Please also check the [edit history](https://minecraftjapan.miraheze.org/wiki/MediaWiki:Gadget-JSprite.js?action=history) of the wiki page._
+_Wiki ページの[編集履歴](https://minecraftjapan.miraheze.org/wiki/MediaWiki:Gadget-JSprite.js?action=history)もご確認ください。_
 
 -   [Urushibara](https://github.com/Urushibara) - [`User:Pneuma`](https://minecraftjapan.miraheze.org/wiki/User:Pneuma)
 -   [shumm7](https://github.com/shumm7) - [`User:Shulmj`](https://minecraftjapan.miraheze.org/wiki/User:Shulmj)
 
-## License
+## ライセンス
 
-All content in this repository is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA-4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en), the same license as the Minecraft Japan Wiki.
+このリポジトリ内のすべてのコンテンツは、[クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC-BY-NC-SA-4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja)で提供されています。これは Minecraft Japan Wiki で用いられているライセンスと同じです。
 
-This gadget was created to be compatible with [`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite) on the Minecraft Wiki.
+このガジェットは、Minecraft Wiki の[`Module:Sprite`](https://minecraft.wiki/w/Module:Sprite)と互換性を保つように作成されました。
 
-![Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA-4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC-BY-NC-SA-4.0')
+![クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 (CC-BY-NC-SA-4.0)](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg 'CC-BY-NC-SA-4.0')
