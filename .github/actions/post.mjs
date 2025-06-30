@@ -113,7 +113,7 @@ async function editPage(csrfToken, page, content) {
         console.log('✅ Page edited successfully');
     } else {
         console.error('❌ Failed to edit page');
-        process.exit(1);
+        throw new Error(data.error.info, data)
     }
     return data
 }
