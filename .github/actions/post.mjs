@@ -104,7 +104,7 @@ async function getContentFromRepos(path) {
  * @returns {Promise<any>} response
  */
 async function editPage(csrfToken, page, content) {
-    res = await fetchWithCookies(`${MW_API}?format=json`, {
+    const res = await fetchWithCookies(`${MW_API}?format=json`, {
         method: 'POST',
         body: new URLSearchParams({
             action: 'edit',
@@ -115,7 +115,7 @@ async function editPage(csrfToken, page, content) {
             bot: 'true'
         }),
     });
-    data = await res.json();
+    const data = await res.json();
     console.log('Edit response:', JSON.stringify(data, null, 2));
 
     if (data.edit && data.edit.result === 'Success') {
