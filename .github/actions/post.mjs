@@ -38,32 +38,36 @@ async function fetchWithCookies(url, options = {}) {
  * @returns {Promise<string>} CSRF token
  */
 async function getCSRFToken() {
-    //  login token
-    let res = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&type=login&format=json`);
-    let data = await res.json();
-    const loginToken = data.query.tokens.logintoken;
+    try {
+        //  login token
+        let res = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&type=login&format=json`);
+        let data = await res.json();
+        const loginToken = data.query.tokens.logintoken;
 
-    // login
-    res = await fetchWithCookies(`${MW_API}?action=login&format=json`, {
-        method: 'POST',
-        body: new URLSearchParams({
-            lgname: MW_USERNAME,
-            lgpassword: MW_PASSWORD,
-            lgtoken: loginToken
-        }),
-    });
-    data = await res.json();
-    if (data.login.result !== 'Success') {
-        console.error('Login failed:', data);
+        // login
+        res = await fetchWithCookies(`${MW_API}?action=login&format=json`, {
+            method: 'POST',
+            body: new URLSearchParams({
+                lgname: MW_USERNAME,
+                lgpassword: MW_PASSWORD,
+                lgtoken: loginToken
+            }),
+        });
+        data = await res.json();
+        if (data.login.result !== 'Success') {
+            throw Error('Login failed.', data);
+        }
+
+        // csrf token
+        res = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&format=json`);
+        data = await res.json();
+        const csrfToken = data.query.tokens.csrftoken;
+
+        return csrfToken
+    } catch (e) {
+        console.error(e);
         process.exit(1);
     }
-
-    // csrf token
-    res = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&format=json`);
-    data = await res.json();
-    const csrfToken = data.query.tokens.csrftoken;
-
-    return csrfToken
 }
 
 /**
@@ -112,19 +116,31 @@ async function editPage(csrfToken, page, content) {
     if (data.edit && data.edit.result === 'Success') {
         console.log('✅ Page edited successfully');
     } else {
-        console.error('❌ Failed to edit page');
+        console.warn('❌ Failed to edit page');
         throw new Error(data.error.info, data)
     }
     return data
 }
 
-getCSRFToken().then(async (csrfToken) => {
-    const content = await getContentFromRepos("src/JSprite.js");
-    await editPage(csrfToken, "MediaWiki:Gadget-JSprite.js", content)
-}).then(async (csrfToken) => {
-    const content = await getContentFromRepos("src/JSprite.lua");
-    await editPage(csrfToken, "Module:JSprite", content)
-}).catch(e => {
+async function main() {
+    const csrfToken = await getCSRFToken()
+
+    try {
+        const content = await getContentFromRepos("src/JSprite.js")
+        await editPage(csrfToken, "MediaWiki:Gadget-JSprite.js", content)
+    } catch (e) {
+        console.warn(e)
+    }
+
+    try {
+        const content = await getContentFromRepos("src/JSprite.lua");
+        await editPage(csrfToken, "Module:JSprite", content)
+    } catch (e) {
+        console.warn(e)
+    }
+}
+
+main().catch(e => {
     console.error(e);
     process.exit(1);
-});
+})
