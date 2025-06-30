@@ -1,3 +1,16 @@
+/*
+ * JSprite (MediaWiki Gadget)
+ * https://github.com/minecraft-japan-wiki/JSprite
+ * 
+ * Originally created by Pneuma on Minecraft Japan Wiki
+ * https://minecraftjapan.miraheze.org/wiki/MediaWiki:Gadget-JSprite
+ * 
+ * 
+ * Licensed under
+ * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+ * https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en
+ */
+
 var JSONData = {};
 
 const hooks = [
