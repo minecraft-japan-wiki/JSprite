@@ -1,0 +1,37 @@
+name: MediaWiki fetch
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Run script
+        env:
+          MW_USERNAME: ${{ secrets.MW_USERNAME }}
+          MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
+          MW_ENDPOINT: ${{ secrets.MW_ENDPOINT }}
+          MW_API: ${{ secrets.MW_API }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_BRANCH: ${{ github.ref_name }}
+        run: node .github/actions/post.mjs
