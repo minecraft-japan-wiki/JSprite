@@ -33,15 +33,6 @@ async function fetchWithCookies(url, options = {}) {
     return response;
 }
 
-async function main() {
-    const csrfToken = await getCSRFToken();
-
-    const content_js = await getContentFromRepos("src/JSprite.js");
-    await editPage(csrfToken, "MediaWiki:Gadget-JSprite.js", content_js)
-    const content_lua = await getContentFromRepos("src/JSprite.lua");
-    await editPage(csrfToken, "Module:JSprite", content_lua)
-}
-
 /**
  * Log-in to the Wiki and get the CSRF token.
  * @returns {Promise<string>} CSRF token
@@ -127,7 +118,13 @@ async function editPage(csrfToken, page, content) {
     return data
 }
 
-main().catch(err => {
-    console.error(err);
+getCSRFToken().then(async (csrfToken) => {
+    const content = await getContentFromRepos("src/JSprite.js");
+    await editPage(csrfToken, "MediaWiki:Gadget-JSprite.js", content)
+}).then(async (csrfToken) => {
+    const content = await getContentFromRepos("src/JSprite.lua");
+    await editPage(csrfToken, "Module:JSprite", content)
+}).catch(e => {
+    console.error(e);
     process.exit(1);
 });
