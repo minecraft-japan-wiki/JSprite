@@ -11,7 +11,7 @@ async function getPage() {
     }
 
     const pageRes = await fetch(`${MW_API}?format=json`, {
-        method: 'PUSH',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             Cookie: MW_COOKIE
