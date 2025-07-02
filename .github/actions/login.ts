@@ -1,5 +1,5 @@
 import fetch from "node-fetch"
-import core from "@actions/core"
+import * as core from "@actions/core"
 
 const MW_API = process.env.MW_API;
 const MW_USERNAME = process.env.MW_USERNAME;
@@ -72,6 +72,7 @@ async function getCSRFToken() {
 }
 
 getCSRFToken().then((res) => {
+    console.log(core)
     core.setOutput("token", res)
     core.setOutput("cookie", cookieJar.join("; "))
 }).catch((e) => {
