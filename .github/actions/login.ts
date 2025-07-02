@@ -5,6 +5,29 @@ const MW_API = process.env.MW_API;
 const MW_USERNAME = process.env.MW_USERNAME;
 const MW_PASSWORD = process.env.MW_PASSWORD;
 
+const cookieJar: Array<string> = [];
+
+/**
+ * Fetch the specified URL.
+ * @param {string} url url
+ * @param {Record<string, any>} options options
+ * @returns {Promise<any>} response
+ */
+async function fetchWithCookies(url: string, options: Record<string, any> = {}) {
+    options.headers = options.headers || {};
+    options.headers.Cookie = cookieJar.join('; ');
+    const response = await fetch(url, options);
+    const setCookie = response.headers.raw()['set-cookie'] || [];
+    setCookie.forEach(cookie => {
+        const item = cookie.split(';')[0];
+        const [name] = item.split('=');
+        const index = cookieJar.findIndex(c => c.startsWith(name + '='));
+        if (index !== -1) cookieJar[index] = item;
+        else cookieJar.push(item);
+    });
+    return response;
+}
+
 /**
  * Log-in to the Wiki and get the CSRF token.
  * @returns {Promise<string>} CSRF token
@@ -17,16 +40,13 @@ async function getCSRFToken() {
         }
 
         //  login token
-        const tokenRes = await fetch(`${MW_API}?action=query&meta=tokens&type=login&format=json`);
+        const tokenRes = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&type=login&format=json`);
         const tokenData = await tokenRes.json();
         const loginToken = tokenData.query.tokens.logintoken;
 
         // login
-        const loginRes = await fetch(`${MW_API}?action=login&format=json`, {
+        const loginRes = await fetchWithCookies(`${MW_API}?action=login&format=json`, {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
             body: new URLSearchParams({
                 lgname: MW_USERNAME,
                 lgpassword: MW_PASSWORD,
@@ -39,27 +59,12 @@ async function getCSRFToken() {
             throw Error('Login failed.');
         }
 
-        const cookieJar: Array<string> = []
-        const setCookie = loginRes.headers.raw()['set-cookie'] || [];
-        setCookie.forEach(cookie => {
-            const item = cookie.split(';')[0]
-            const [name] = item.split('=')
-            const index = cookieJar.findIndex(c => c.startsWith(name + '='))
-            if (index !== -1) cookieJar[index] = item
-            else cookieJar.push(item)
-        });
-        const cookie = cookieJar.join('; ')
-
         // csrf token
-        const csrfTokenRes = await fetch(`${MW_API}?action=query&meta=tokens&format=json`, {
-            headers: { Cookie: cookie }
-        });
+        const csrfTokenRes = await fetchWithCookies(`${MW_API}?action=query&meta=tokens&format=json`);
         const csrfTokenData = await csrfTokenRes.json();
         const csrfToken = csrfTokenData.query.tokens.csrftoken;
 
-        return {
-            token: csrfToken, cookie: cookie
-        }
+        return csrfToken
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -67,8 +72,8 @@ async function getCSRFToken() {
 }
 
 getCSRFToken().then((res) => {
-    core.setOutput("token", res.token)
-    core.setOutput("cookie", res.cookie)
+    core.setOutput("token", res)
+    core.setOutput("cookie", cookieJar.join("; "))
 }).catch((e) => {
     console.error(e);
     process.exit(1);
