@@ -37,7 +37,7 @@ async function getCSRFToken() {
     try {
         // check env value
         if (!(MW_API && MW_USERNAME && MW_PASSWORD)) {
-            throw new Error("no env values.")
+            throw new Error("Missing required environment info.")
         }
 
         //  login token
@@ -77,6 +77,5 @@ getCSRFToken().then((res) => {
     core.setOutput("token", res)
     core.setOutput("cookie", cookieJar.join("; "))
 }).catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.warn(e);
 })

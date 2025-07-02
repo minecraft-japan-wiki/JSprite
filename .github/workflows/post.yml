@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install node-fetch@2 @actions/core @actions/github
+          npm install node-fetch@2 @actions/core @actions/github @octokit/rest js-base64
           npm install -D @types/node @types/node-fetch typescript
       
       - name: Build script
@@ -33,12 +33,28 @@ jobs:
       - name: Login wiki
         id: login
         env:
+          MW_API: ${{ secrets.MW_API }}
           MW_USERNAME: ${{ secrets.MW_USERNAME }}
           MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
-          MW_API: ${{ secrets.MW_API }}
         run: node .github/dist/login.js
       
-      - name: Upload content
+      - name: Get content (JS)
+        id: content_js
+        env:
+          MW_API: ${{ secrets.MW_API }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
+          MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
+        run: node .github/dist/get.js
+      
+      - name: Compare and create PR (JS)
+        if: ${{ steps.content_js.outputs.user }} != "Repository Bot"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MW_PAGE_CONTENT: ${{ steps.content_js.outputs.content }}
+          GITHUB_TARGET_DIR: "src/JSprite.js"
+        run: node .github/dist/pr.js
+      
+      - name: Upload content (JS)
         env:
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
@@ -47,8 +63,24 @@ jobs:
           MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
           GITHUB_TARGET_DIR: "src/JSprite.js"
         run: node .github/dist/post.js
+      
+      - name: Get content (Lua)
+        id: content_lua
+        env:
+          MW_API: ${{ secrets.MW_API }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
+          MW_TARGET_PAGE: "Module:JSprite"
+        run: node .github/dist/get.js
+      
+      - name: Compare and create PR (Lua)
+        if: ${{ steps.content_lua.outputs.user }} != "Repository Bot"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MW_PAGE_CONTENT: ${{ steps.content_lua.outputs.content }}
+          GITHUB_TARGET_DIR: "src/JSprite.lua"
+        run: node .github/dist/pr.js
 
-      - name: Upload content
+      - name: Upload content (Lua)
         env:
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}

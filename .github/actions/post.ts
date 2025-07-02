@@ -43,10 +43,16 @@ async function getContentFromRepos(path: string) {
  * @param {string} content content
  * @returns {Promise<any>} response
  */
-async function editPage(page: string, content: string) {
-    if (!(MW_API && MW_CSRF_TOKEN && MW_COOKIE)) {
-        throw new Error("no env values.")
+async function editPage() {
+    if (!MW_API || !MW_CSRF_TOKEN || !MW_COOKIE || !GITHUB_TARGET_DIR || !MW_TARGET_PAGE) {
+        throw new Error("Missing required environment info.")
     }
+
+    const content = await getContentFromRepos(GITHUB_TARGET_DIR)
+    const repo = github.context.repo
+    const ref = github.context.ref
+    const eventName = github.context.eventName
+
 
     const res = await fetch(`${MW_API}?format=json`, {
         method: 'POST',
@@ -56,10 +62,10 @@ async function editPage(page: string, content: string) {
         },
         body: new URLSearchParams({
             action: 'edit',
-            title: page,
+            title: MW_TARGET_PAGE,
             text: content,
             token: MW_CSRF_TOKEN,
-            summary: 'Posted via GitHub Actions',
+            summary: `Posted via GitHub Actions \nrepo: ${repo.owner}/${repo.repo} \nref: ${ref} \nevent: ${eventName}`,
             bot: 'true'
         }),
     });
@@ -68,6 +74,7 @@ async function editPage(page: string, content: string) {
 
     if (data.edit && data.edit.result === 'Success') {
         console.log('✅ Page edited successfully');
+        console.log(data)
     } else {
         console.warn('❌ Failed to edit page');
         console.warn(data)
@@ -76,19 +83,6 @@ async function editPage(page: string, content: string) {
     return data
 }
 
-async function main() {
-    try {
-        if (!(MW_TARGET_PAGE && GITHUB_TARGET_DIR)) {
-            throw Error("no env values.")
-        }
-        const content = await getContentFromRepos(GITHUB_TARGET_DIR)
-        await editPage(MW_TARGET_PAGE, content)
-    } catch (e) {
-        console.warn(e)
-    }
-}
-
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
+editPage().catch((e) => {
+    console.warn(e);
 })
