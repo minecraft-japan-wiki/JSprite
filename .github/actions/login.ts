@@ -56,7 +56,7 @@ async function getCSRFToken() {
         });
         const loginData = await loginRes.json();
         if (loginData?.login?.result !== 'Success') {
-            console.warn(loginData)
+            console.warn(JSON.stringify(loginData, null, 2))
             throw Error('Login failed.');
         }
 
