@@ -21,7 +21,7 @@ async function getPage() {
             titles: MW_TARGET_PAGE,
             prop: "revisions",
             formatversion: "2",
-            rvprop: "content",
+            rvprop: "content|user",
             rvslots: "*"
         }),
     });
