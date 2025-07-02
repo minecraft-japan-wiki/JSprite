@@ -31,12 +31,12 @@ async function getPage() {
     const user: string | undefined = pageData?.query?.pages[0]?.revisions[0]?.user
     if (content && user) {
         console.log('✅ Succeeded to get page content');
-        console.log(pageData)
+        console.log(JSON.stringify(pageData, null, 2))
         core.setOutput("content", content)
         core.setOutput("user", user)
     } else {
         console.warn('❌ Failed to get page content');
-        console.warn(pageData)
+        console.warn(JSON.stringify(pageData, null, 2))
         throw Error("Failed to get page content.")
     }
 }
