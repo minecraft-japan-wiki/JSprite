@@ -38,17 +38,27 @@ async function getCSRFToken() {
             console.warn(loginData)
             throw Error('Login failed.');
         }
-        const cookies = loginRes.headers.raw()['set-cookie'].map(c => c.split(';')[0]).join('; ');
+
+        const cookieJar: Array<string> = []
+        const setCookie = loginRes.headers.raw()['set-cookie'] || [];
+        setCookie.forEach(cookie => {
+            const item = cookie.split(';')[0]
+            const [name] = item.split('=')
+            const index = cookieJar.findIndex(c => c.startsWith(name + '='))
+            if (index !== -1) cookieJar[index] = item
+            else cookieJar.push(item)
+        });
+        const cookie = cookieJar.join('; ')
 
         // csrf token
         const csrfTokenRes = await fetch(`${MW_API}?action=query&meta=tokens&format=json`, {
-            headers: { Cookie: cookies }
+            headers: { Cookie: cookie }
         });
         const csrfTokenData = await csrfTokenRes.json();
         const csrfToken = csrfTokenData.query.tokens.csrftoken;
 
         return {
-            token: csrfToken, cookies: cookies
+            token: csrfToken, cookie: cookie
         }
     } catch (e) {
         console.error(e);
@@ -58,7 +68,7 @@ async function getCSRFToken() {
 
 getCSRFToken().then((res) => {
     core.setOutput("token", res.token)
-    core.setOutput("cookies", res.cookies)
+    core.setOutput("cookie", res.cookie)
 }).catch((e) => {
     console.error(e);
     process.exit(1);
