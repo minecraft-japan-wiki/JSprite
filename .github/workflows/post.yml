@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install node-fetch@2 @actions/core
+          npm install node-fetch@2 @actions/core @actions/github
           npm install -D @types/node @types/node-fetch typescript
       
       - name: Build script
@@ -36,30 +36,24 @@ jobs:
           MW_USERNAME: ${{ secrets.MW_USERNAME }}
           MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
           MW_API: ${{ secrets.MW_API }}
-        run: node .github/actions/dist/login.js
+        run: node .github/dist/login.js
       
       - name: Upload content
         env:
-          MW_USERNAME: ${{ secrets.MW_USERNAME }}
-          MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
           GITHUB_TARGET_DIR: "src/JSprite.js"
-        run: node .github/actions/dist/post.js
+        run: node .github/dist/post.js
 
       - name: Upload content
         env:
-          MW_USERNAME: ${{ secrets.MW_USERNAME }}
-          MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "Module:JSprite"
           GITHUB_TARGET_DIR: "src/JSprite.lua"
-        run: node .github/actions/dist/post.js
+        run: node .github/dist/post.js

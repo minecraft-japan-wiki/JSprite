@@ -1,13 +1,14 @@
-const MW_API = process.env.MW_API;
-const MW_USERNAME = process.env.MW_USERNAME;
-const MW_PASSWORD = process.env.MW_PASSWORD;
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH;
-const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
+import fetch from "node-fetch"
+import * as core from "@actions/core"
+import * as github from "@actions/github"
 
-const MW_TARGET_PAGE = process.env.MW_PAGE;
+const MW_API = process.env.MW_API;
+const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+const MW_TARGET_PAGE = process.env.MW_TARGET_PAGE;
 const GITHUB_TARGET_DIR = process.env.GITHUB_TARGET_DIR;
+const MW_COOKIE = process.env.MW_COOKIE
 
 /**
  * Get the source code from the repository.
@@ -15,11 +16,13 @@ const GITHUB_TARGET_DIR = process.env.GITHUB_TARGET_DIR;
  * @returns {Promise<string>} source code
  */
 async function getContentFromRepos(path: string) {
-    if (!(GITHUB_TOKEN && GITHUB_REPOSITORY && GITHUB_BRANCH)) {
+    if (!(GITHUB_TOKEN)) {
         throw new Error("no env values.")
     }
 
-    const url = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${path}?ref=${GITHUB_BRANCH}`;
+    const repo = github.context.repo
+    const branch = github.context.ref
+    const url = `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/${path}?ref=${branch}`;
 
     const res = await fetch(url, {
         headers: {
@@ -41,7 +44,7 @@ async function getContentFromRepos(path: string) {
  * @returns {Promise<any>} response
  */
 async function editPage(page: string, content: string) {
-    if (!(MW_API && MW_CSRF_TOKEN)) {
+    if (!(MW_API && MW_CSRF_TOKEN && MW_COOKIE)) {
         throw new Error("no env values.")
     }
 
@@ -49,6 +52,7 @@ async function editPage(page: string, content: string) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            Cookie: MW_COOKIE
         },
         body: new URLSearchParams({
             action: 'edit',
@@ -66,16 +70,25 @@ async function editPage(page: string, content: string) {
         console.log('✅ Page edited successfully');
     } else {
         console.warn('❌ Failed to edit page');
-        throw new Error(data.error.info)
+        console.warn(data)
+        throw Error(data.error.info)
     }
     return data
 }
 
 async function main() {
     try {
-        const content = await getContentFromRepos("src/JSprite.js")
-        await editPage("MediaWiki:Gadget-JSprite.js", content)
+        if (!(MW_TARGET_PAGE && GITHUB_TARGET_DIR)) {
+            throw Error("no env values.")
+        }
+        const content = await getContentFromRepos(GITHUB_TARGET_DIR)
+        await editPage(MW_TARGET_PAGE, content)
     } catch (e) {
         console.warn(e)
     }
 }
+
+main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+})
