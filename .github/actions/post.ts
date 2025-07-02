@@ -1,12 +1,12 @@
 import fetch from "node-fetch"
 
 const MW_API = process.env.MW_API;
+const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH;
-const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
 
-const MW_TARGET_PAGE = process.env.MW_PAGE;
+const MW_TARGET_PAGE = process.env.MW_TARGET_PAGE;
 const GITHUB_TARGET_DIR = process.env.GITHUB_TARGET_DIR;
 const MW_COOKIE = process.env.MW_COOKIE
 
