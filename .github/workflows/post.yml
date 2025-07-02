@@ -49,6 +49,7 @@ jobs:
           GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
           GITHUB_TARGET_DIR: "src/JSprite.js"
+          MW_COOKIES: ${{ steps.login.outputs.cookies }}
         run: node .github/dist/post.js
 
       - name: Upload content
@@ -62,4 +63,5 @@ jobs:
           GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "Module:JSprite"
           GITHUB_TARGET_DIR: "src/JSprite.lua"
+          MW_COOKIES: ${{ steps.login.outputs.cookies }}
         run: node .github/dist/post.js

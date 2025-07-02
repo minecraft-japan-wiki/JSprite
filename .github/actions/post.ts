@@ -1,3 +1,5 @@
+import fetch from "node-fetch"
+
 const MW_API = process.env.MW_API;
 const MW_USERNAME = process.env.MW_USERNAME;
 const MW_PASSWORD = process.env.MW_PASSWORD;
@@ -8,6 +10,7 @@ const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
 
 const MW_TARGET_PAGE = process.env.MW_PAGE;
 const GITHUB_TARGET_DIR = process.env.GITHUB_TARGET_DIR;
+const MW_COOKIES = process.env.MW_COOKIES
 
 /**
  * Get the source code from the repository.
@@ -41,7 +44,7 @@ async function getContentFromRepos(path: string) {
  * @returns {Promise<any>} response
  */
 async function editPage(page: string, content: string) {
-    if (!(MW_API && MW_CSRF_TOKEN)) {
+    if (!(MW_API && MW_CSRF_TOKEN && MW_COOKIES)) {
         throw new Error("no env values.")
     }
 
@@ -49,6 +52,7 @@ async function editPage(page: string, content: string) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            Cookie: MW_COOKIES
         },
         body: new URLSearchParams({
             action: 'edit',

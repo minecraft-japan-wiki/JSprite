@@ -1,3 +1,4 @@
+import fetch from "node-fetch"
 import core from "@actions/core"
 
 const MW_API = process.env.MW_API;
@@ -37,21 +38,27 @@ async function getCSRFToken() {
             console.warn(loginData)
             throw Error('Login failed.');
         }
+        const cookies = loginRes.headers.raw()['set-cookie'].map(c => c.split(';')[0]).join('; ');
 
         // csrf token
-        const csrfTokenRes = await fetch(`${MW_API}?action=query&meta=tokens&format=json`);
+        const csrfTokenRes = await fetch(`${MW_API}?action=query&meta=tokens&format=json`, {
+            headers: { Cookie: cookies }
+        });
         const csrfTokenData = await csrfTokenRes.json();
         const csrfToken = csrfTokenData.query.tokens.csrftoken;
 
-        return csrfToken
+        return {
+            token: csrfToken, cookies: cookies
+        }
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 }
 
-getCSRFToken().then((token) => {
-    core.setOutput("token", token)
+getCSRFToken().then((res) => {
+    core.setOutput("token", res.token)
+    core.setOutput("cookies", res.cookies)
 }).catch((e) => {
     console.error(e);
     process.exit(1);
