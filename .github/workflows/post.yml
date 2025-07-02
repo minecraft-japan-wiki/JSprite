@@ -23,15 +23,43 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install node-fetch@2
+        run: |
+          npm install node-fetch@2 @actions/core
+          npm install -D @types/node @types/node-fetch typescript
+      
+      - name: Build script
+        run: npx tsc --project tsconfig.actions.json
 
-      - name: Run script
+      - name: Login wiki
+        id: login
         env:
           MW_USERNAME: ${{ secrets.MW_USERNAME }}
           MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
-          MW_ENDPOINT: ${{ secrets.MW_ENDPOINT }}
           MW_API: ${{ secrets.MW_API }}
+        run: node .github/actions/dist/login.js
+      
+      - name: Upload content
+        env:
+          MW_USERNAME: ${{ secrets.MW_USERNAME }}
+          MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
+          MW_API: ${{ secrets.MW_API }}
+          MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_BRANCH: ${{ github.ref_name }}
-        run: node .github/actions/post.mjs
+          MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
+          GITHUB_TARGET_DIR: "src/JSprite.js"
+        run: node .github/actions/dist/post.js
+
+      - name: Upload content
+        env:
+          MW_USERNAME: ${{ secrets.MW_USERNAME }}
+          MW_PASSWORD: ${{ secrets.MW_PASSWORD }}
+          MW_API: ${{ secrets.MW_API }}
+          MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_BRANCH: ${{ github.ref_name }}
+          MW_TARGET_PAGE: "Module:JSprite"
+          GITHUB_TARGET_DIR: "src/JSprite.lua"
+        run: node .github/actions/dist/post.js
