@@ -22,8 +22,7 @@ async function getPage() {
             prop: "revisions",
             formatversion: "2",
             rvprop: "content",
-            rvslots: "*",
-            bot: 'true',
+            rvslots: "*"
         }),
     });
 
