@@ -66,7 +66,8 @@ async function editPage(page: string, content: string) {
         console.log('✅ Page edited successfully');
     } else {
         console.warn('❌ Failed to edit page');
-        throw new Error(data.error.info, data)
+        console.warn(data)
+        throw Error(data.error.info)
     }
     return data
 }
