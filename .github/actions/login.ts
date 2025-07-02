@@ -1,5 +1,6 @@
 import fetch from "node-fetch"
 import * as core from "@actions/core"
+import * as github from "@actions/github"
 
 const MW_API = process.env.MW_API;
 const MW_USERNAME = process.env.MW_USERNAME;

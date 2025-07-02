@@ -42,22 +42,18 @@ jobs:
         env:
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "MediaWiki:Gadget-JSprite.js"
           GITHUB_TARGET_DIR: "src/JSprite.js"
-          MW_COOKIE: ${{ steps.login.outputs.cookie }}
         run: node .github/dist/post.js
 
       - name: Upload content
         env:
           MW_API: ${{ secrets.MW_API }}
           MW_CSRF_TOKEN: ${{ steps.login.outputs.token }}
+          MW_COOKIE: ${{ steps.login.outputs.cookie }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_BRANCH: ${{ github.ref_name }}
           MW_TARGET_PAGE: "Module:JSprite"
           GITHUB_TARGET_DIR: "src/JSprite.lua"
-          MW_COOKIE: ${{ steps.login.outputs.cookie }}
         run: node .github/dist/post.js

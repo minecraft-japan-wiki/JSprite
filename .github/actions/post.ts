@@ -1,10 +1,10 @@
 import fetch from "node-fetch"
+import * as core from "@actions/core"
+import * as github from "@actions/github"
 
 const MW_API = process.env.MW_API;
 const MW_CSRF_TOKEN = process.env.MW_CSRF_TOKEN;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH;
 
 const MW_TARGET_PAGE = process.env.MW_TARGET_PAGE;
 const GITHUB_TARGET_DIR = process.env.GITHUB_TARGET_DIR;
@@ -16,11 +16,13 @@ const MW_COOKIE = process.env.MW_COOKIE
  * @returns {Promise<string>} source code
  */
 async function getContentFromRepos(path: string) {
-    if (!(GITHUB_TOKEN && GITHUB_REPOSITORY && GITHUB_BRANCH)) {
+    if (!(GITHUB_TOKEN)) {
         throw new Error("no env values.")
     }
 
-    const url = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${path}?ref=${GITHUB_BRANCH}`;
+    const repo = github.context.repo
+    const branch = github.context.ref
+    const url = `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/${path}?ref=${branch}`;
 
     const res = await fetch(url, {
         headers: {
