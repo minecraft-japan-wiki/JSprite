@@ -73,8 +73,11 @@ async function editPage(page: string, content: string) {
 
 async function main() {
     try {
-        const content = await getContentFromRepos("src/JSprite.js")
-        await editPage("MediaWiki:Gadget-JSprite.js", content)
+        if (!(MW_TARGET_PAGE && GITHUB_TARGET_DIR)) {
+            throw Error("no env values.")
+        }
+        const content = await getContentFromRepos(GITHUB_TARGET_DIR)
+        await editPage(MW_TARGET_PAGE, content)
     } catch (e) {
         console.warn(e)
     }
