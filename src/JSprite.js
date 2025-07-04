@@ -61,21 +61,18 @@ function setupVESpriteHooks() {
             const origFunc = ve.ce.MWTransclusionNode.prototype.afterRender;
 
             ve.ce.MWTransclusionNode.prototype.afterRender = function () {
-
-                if (this.type === "mwTransclusionInline") {
-                    try {
-                        if (this.$element.hasClass("jsprite")) {
-                            var element = this.$element.toArray()[0];
-                            this.on("rerender", () => { renderElement(element); });
-                        }
-                        if (this.$element.find(".jsprite").length > 0) {
-                            const $this = this;
-                            this.$element.find(".jsprite").each(function () {
-                                $this.on("rerender", () => { renderElement(this) });
-                            });
-                        }
-                    } catch (e) {
+                try {
+                    if (this.$element.hasClass("jsprite")) {
+                        var element = this.$element.toArray()[0];
+                        this.on("rerender", () => { renderElement(element); });
                     }
+                    if (this.$element.find(".jsprite").length > 0) {
+                        const $this = this;
+                        this.$element.find(".jsprite").each(function () {
+                            $this.on("rerender", () => { renderElement(this) });
+                        });
+                    }
+                } catch (e) {
                 }
 
                 return origFunc.apply(this, arguments);
