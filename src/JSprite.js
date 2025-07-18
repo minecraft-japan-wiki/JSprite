@@ -191,7 +191,7 @@ function renderSpriteElement() {
 
         var isVEenabled = (window.ve && ve.init && ve.init.target && ve.init.target.active);
 
-        data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings.sheetsize;
+        data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings.sheetsize || 256;
         data.settings.width = data.settings.width || data.settings.size || 16;
         data.settings.height = data.settings.height || data.settings.size || 16;
         data.settings.scale = data.settings.scale || 1;
@@ -230,7 +230,8 @@ function renderSpriteElement() {
             }
         }
 
-        if (id && data.ids[id] && !hasIrregularFiles) {
+        if (!id) id = "blank"
+        if (data.ids[id] && !hasIrregularFiles) {
             if (data.hasOwnProperty("appendings")) {
                 option = $.extend({}, data.appendings[id] || {}, option);
             }
@@ -410,9 +411,9 @@ function renderSpriteElement() {
                 option.target.append(spr);
             }
         }
-
-        tooltipQueue();
     }
+
+    tooltipQueue();
 }
 
 /**
@@ -422,14 +423,14 @@ function renderSpriteElement() {
  * @returns {JQuery<HTMLElement>} The styled `sprite` element.
  */
 function renderFallbackSprite(sprite, option) {
-    var pos = option.pos - 1 || 0;
-    var sheetWidth = option["sheet-width"] || option.sheetsize;
-    var width = option.width || option.size || 16;
-    var height = option.height || option.size || 16;
-    var scale = option.scale || 1;
+    const pos = (option.pos || 1) - 1;
+    const sheetWidth = option["sheet-width"] || option.sheetsize || 256;
+    const width = option.width || option.size || 16;
+    const height = option.height || option.size || 16;
+    const scale = option.scale || 1;
 
-    var holizontal_count = sheetWidth / width;
-    var position = {
+    const holizontal_count = sheetWidth / width;
+    const position = {
         x: (pos % holizontal_count) * width,
         y: Math.floor(pos / holizontal_count) * height
     };
@@ -443,7 +444,7 @@ function renderFallbackSprite(sprite, option) {
     if (option.classname) {
         sprite.addClass(option.classname);
     } else {
-        var url = option.image;
+        let url = option.image;
 
         if (!url) {
             getURL(option.sheet + ".png").then(function (url) {
@@ -609,10 +610,7 @@ function createDocument() {
     if (data.Irregular_files) {
         Object.keys(data.Irregular_files).sort().forEach(function (key) {
 
-            var sprite_box = $("<li />", {
-                "class": "spritedoc-box"
-            }).appendTo(sections[999]);
-
+            var sprite_box = $("<li />", { "class": "spritedoc-box" }).appendTo(sections[999]);
             var sprite = $("<span />", { "class": "sprite " });
 
             sprite.addClass(data.settings.classname);
@@ -729,7 +727,7 @@ function tooltipReady() {
  */
 function capitalize(text) {
     if (text) {
-        var tokens = text.replace(/(\_|\-)/g, " ").split(" ");
+        let tokens = text.replace(/(\_|\-)/g, " ").split(" ");
         tokens = tokens.map(function (token) {
             if (token.length > 1) {
                 if (['of', "in", 'on', 'and', "o'", "with", "as", "at", "the", "an"].indexOf(token.toLowerCase()) > -1) {
