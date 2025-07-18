@@ -220,7 +220,7 @@ function renderSpriteElement() {
             }
         }
 
-        if (id && !hasIrregularFiles) {
+        if (!hasIrregularFiles) {
             id = option.id;
             if (id && !data.ids[id]) {
                 id = id.toLowerCase();
