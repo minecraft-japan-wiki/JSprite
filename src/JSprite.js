@@ -230,191 +230,190 @@ function renderSpriteElement() {
             }
         }
 
-        if (id) {
-            if (data.ids[id] && !hasIrregularFiles) {
-                if (data.hasOwnProperty("appendings")) {
-                    option = $.extend({}, data.appendings[id] || {}, option);
-                }
+        if (!id) id = "blank"
+        if (data.ids[id] && !hasIrregularFiles) {
+            if (data.hasOwnProperty("appendings")) {
+                option = $.extend({}, data.appendings[id] || {}, option);
+            }
 
-                var pos = data.ids[id].pos - 1;
-                var holizontal_count = option["sheet-width"] / option.width;
+            var pos = data.ids[id].pos - 1;
+            var holizontal_count = option["sheet-width"] / option.width;
 
-                var position = {
-                    x: (pos % holizontal_count) * option.width,
-                    y: Math.floor(pos / holizontal_count) * option.height
-                };
+            var position = {
+                x: (pos % holizontal_count) * option.width,
+                y: Math.floor(pos / holizontal_count) * option.height
+            };
 
-                var sprite =
-                    $("<span/>", {
-                        "class": "sprite"
-                    }).css({
-                        "background-position": "-" + (position.x * scale) + "px -" + (position.y * scale) + "px"
-                    });
+            var sprite =
+                $("<span/>", {
+                    "class": "sprite"
+                }).css({
+                    "background-position": "-" + (position.x * scale) + "px -" + (position.y * scale) + "px"
+                });
 
-                if (!option.notip) {
-                    var tooltipopt = "";
-                    if (option.rarity || option.description) {
-                        var obj = {};
-                        if (option.rarity) {
-                            obj['class'] = "minetext-" + option.rarity;
-                        }
-                        if (!option.description2) {
-                            if (option.description) {
-                                obj.description = option.description;
-                                if (option.posi) {
-                                    obj.posi = 1;
-                                }
-                                if (option.nega) {
-                                    obj.nega = 1;
-                                }
+            if (!option.notip) {
+                var tooltipopt = "";
+                if (option.rarity || option.description) {
+                    var obj = {};
+                    if (option.rarity) {
+                        obj['class'] = "minetext-" + option.rarity;
+                    }
+                    if (!option.description2) {
+                        if (option.description) {
+                            obj.description = option.description;
+                            if (option.posi) {
+                                obj.posi = 1;
                             }
-                        } else {
-                            obj.description = [];
-                            var i = 1, d;
-                            while (option['description' + (i > 1 && i || '')]) {
-                                var item = {};
-                                d = (i > 1 && i || '');
-                                item.description = option['description' + d];
-                                if (option['posi' + d]) {
-                                    item.posi = option['posi' + d];
-                                }
-                                if (option['nega' + d]) {
-                                    item.nega = option['nega' + d];
-                                }
-                                obj.description.push(item);
-                                i++;
+                            if (option.nega) {
+                                obj.nega = 1;
                             }
                         }
-                        tooltipopt = JSON.stringify(obj);
-                    }
-
-                    sprite.attr({
-                        "data-mine-tooltip": tooltipopt,
-                        "title": option.title || (option.nocap ? option.id : capitalize(option.id))
-                    });
-                }
-
-                if (scale != data.settings.scale) {
-                    sprite.css({
-                        "width": (option.width * scale) + "px",
-                        "height": (option.height * scale) + "px",
-                        "background-size": (option["sheet-width"] * scale) + "px auto"
-                    });
-                }
-
-                if (data.settings.classname) {
-                    //クラス定義を使うべき
-                    sprite.addClass(data.settings.classname);
-                } else {
-                    var url = data.settings.image;
-                    if (option.image) {
-                        url = option.image;
-                    }
-
-                    if (!url && option.sheet) {
-                        url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get('wgArticlePath'));
-                    }
-
-                    sprite.css({ "background-image": "url(" + url + ")" });
-                }
-
-                if (option.text) {
-                    var spriteText = $("<span/>", { "class": "sprite-text", "text": option.text });
-
-                    if (option.link) {
-                        option.target.after(
-                            $("<a/>", { "href": option.link }).append(spriteText)
-                        );
                     } else {
-                        option.target.after(spriteText);
+                        obj.description = [];
+                        var i = 1, d;
+                        while (option['description' + (i > 1 && i || '')]) {
+                            var item = {};
+                            d = (i > 1 && i || '');
+                            item.description = option['description' + d];
+                            if (option['posi' + d]) {
+                                item.posi = option['posi' + d];
+                            }
+                            if (option['nega' + d]) {
+                                item.nega = option['nega' + d];
+                            }
+                            obj.description.push(item);
+                            i++;
+                        }
                     }
+                    tooltipopt = JSON.stringify(obj);
                 }
+
+                sprite.attr({
+                    "data-mine-tooltip": tooltipopt,
+                    "title": option.title || (option.nocap ? option.id : capitalize(option.id))
+                });
+            }
+
+            if (scale != data.settings.scale) {
+                sprite.css({
+                    "width": (option.width * scale) + "px",
+                    "height": (option.height * scale) + "px",
+                    "background-size": (option["sheet-width"] * scale) + "px auto"
+                });
+            }
+
+            if (data.settings.classname) {
+                //クラス定義を使うべき
+                sprite.addClass(data.settings.classname);
+            } else {
+                var url = data.settings.image;
+                if (option.image) {
+                    url = option.image;
+                }
+
+                if (!url && option.sheet) {
+                    url = ("Special:FilePath/" + option.sheet + ".png").replace(/^(.*)$/, mw.config.get('wgArticlePath'));
+                }
+
+                sprite.css({ "background-image": "url(" + url + ")" });
+            }
+
+            if (option.text) {
+                var spriteText = $("<span/>", { "class": "sprite-text", "text": option.text });
 
                 if (option.link) {
                     option.target.after(
-                        $("<a/>", { "href": option.link }).append(sprite)
+                        $("<a/>", { "href": option.link }).append(spriteText)
                     );
                 } else {
-                    if (isVEenabled) {
-                        option.target.empty();
-                        option.target.append(sprite);
-                        option.target.css({ width: "auto", height: "auto" });
-                        option.target.attr("data-done", "");
-                    } else {
-                        option.target.after(sprite);
-                    }
-                }
-                if (!isVEenabled) {
-                    option.target.remove();
+                    option.target.after(spriteText);
                 }
             }
 
-            else {
-                var filename;
-                var isExists = hasIrregularFiles;
-                if (isExists) {
-                    filename = data.Irregular_files[id];
-                } else {
-                    var title = new mw.Title(option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get('wgNamespaceIds').file);
-                    isExists = title.exists();
-                    if (isExists) {
-                        filename = title.getPrefixedText();
-                    }
-                }
-
-                if (isExists) {
-                    getURL(filename).then(function (url) {
-                        if (url) {
-                            var sprite = $("<img>", {
-                                "src": url,
-                                "width": option.width * scale,
-                                "height": option.height * scale,
-                            });
-
-                            if (!option.notip) {
-                                sprite.attr({
-                                    "data-mine-tooltip": "",
-                                    "title": option.title || option.nocap ? option.id : capitalize(option.id)
-                                });
-                            }
-                            //option.target.after(sprite);
-                            //option.target.hide();
-                            option.target.css({ width: "auto", height: "auto" });
-                            option.target.empty();
-                            option.target.append(sprite);
-                            option.target.attr("data-done", "");
-                        } else {
-                            if (id && id != "blank" && id.length > 0) {
-                                option.target
-                                    .attr("data-mine-tooltip", "")
-                                    .attr("title", option.title || option.id);
-                            }
-                            var spr = $("<span/>", { "class": "sprite" });
-                            renderFallbackSprite(spr, option);
-                            option.target.css({ width: "auto", height: "auto" });
-                            option.target.empty();
-                            option.target.append(spr);
-                        }
-                        tooltipQueue();
-                    });
-
-                } else {
-                    if (id && id != "blank" && id.length > 0) {
-                        option.target
-                            .attr("data-mine-tooltip", "")
-                            .attr("title", option.title || option.id);
-                    }
-                    var spr = $("<span/>", { "class": "sprite" });
-                    renderFallbackSprite(spr, option);
-                    option.target.css({ width: "auto", height: "auto" });
+            if (option.link) {
+                option.target.after(
+                    $("<a/>", { "href": option.link }).append(sprite)
+                );
+            } else {
+                if (isVEenabled) {
                     option.target.empty();
-                    option.target.append(spr);
+                    option.target.append(sprite);
+                    option.target.css({ width: "auto", height: "auto" });
+                    option.target.attr("data-done", "");
+                } else {
+                    option.target.after(sprite);
                 }
+            }
+            if (!isVEenabled) {
+                option.target.remove();
             }
         }
 
-        tooltipQueue();
+        else {
+            var filename;
+            var isExists = hasIrregularFiles;
+            if (isExists) {
+                filename = data.Irregular_files[id];
+            } else {
+                var title = new mw.Title(option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get('wgNamespaceIds').file);
+                isExists = title.exists();
+                if (isExists) {
+                    filename = title.getPrefixedText();
+                }
+            }
+
+            if (isExists) {
+                getURL(filename).then(function (url) {
+                    if (url) {
+                        var sprite = $("<img>", {
+                            "src": url,
+                            "width": option.width * scale,
+                            "height": option.height * scale,
+                        });
+
+                        if (!option.notip) {
+                            sprite.attr({
+                                "data-mine-tooltip": "",
+                                "title": option.title || option.nocap ? option.id : capitalize(option.id)
+                            });
+                        }
+                        //option.target.after(sprite);
+                        //option.target.hide();
+                        option.target.css({ width: "auto", height: "auto" });
+                        option.target.empty();
+                        option.target.append(sprite);
+                        option.target.attr("data-done", "");
+                    } else {
+                        if (id && id != "blank" && id.length > 0) {
+                            option.target
+                                .attr("data-mine-tooltip", "")
+                                .attr("title", option.title || option.id);
+                        }
+                        var spr = $("<span/>", { "class": "sprite" });
+                        renderFallbackSprite(spr, option);
+                        option.target.css({ width: "auto", height: "auto" });
+                        option.target.empty();
+                        option.target.append(spr);
+                    }
+                    tooltipQueue();
+                });
+
+            } else {
+                if (id && id != "blank" && id.length > 0) {
+                    option.target
+                        .attr("data-mine-tooltip", "")
+                        .attr("title", option.title || option.id);
+                }
+                var spr = $("<span/>", { "class": "sprite" });
+                renderFallbackSprite(spr, option);
+                option.target.css({ width: "auto", height: "auto" });
+                option.target.empty();
+                option.target.append(spr);
+            }
+        }
     }
+
+    tooltipQueue();
 }
 
 /**
