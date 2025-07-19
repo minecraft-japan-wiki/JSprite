@@ -135,7 +135,11 @@ function p.base(f)
 		end
 	end
 
-	return tostring(sprite)
+	if args['link'] then
+		return mw.ustring.format("[[%s|%s]]", args['link'], tostring(sprite))
+	else
+		return tostring(sprite)
+	end
 end
 
 function p.doc(f)
