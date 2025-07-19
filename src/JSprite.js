@@ -318,22 +318,24 @@ function renderSpriteElement() {
                 sprite.css({ "background-image": "url(" + url + ")" });
             }
 
+            let wrapper
             if (option.text) {
                 var spriteText = $("<span/>", { "class": "sprite-text", "text": option.text });
-
-                if (option.link) {
-                    option.target.after(
-                        $("<a/>", { "href": option.link }).append(spriteText)
-                    );
-                } else {
-                    option.target.after(spriteText);
-                }
+                wrapper = $('<span class="nowrap"/>')
+                wrapper.append(sprite)
+                wrapper.append(spriteText)
             }
 
-            if (option.link) {
-                option.target.after(
-                    $("<a/>", { "href": option.link }).append(sprite)
-                );
+            if (option.text) {
+                if (isVEenabled) {
+                    option.target.empty();
+                    option.target.append(wrapper);
+                    option.target.css({ width: "auto", height: "auto" });
+                    option.target.attr("data-done", "");
+                } else {
+                    option.target.after(wrapper);
+                }
+
             } else {
                 if (isVEenabled) {
                     option.target.empty();
@@ -344,6 +346,7 @@ function renderSpriteElement() {
                     option.target.after(sprite);
                 }
             }
+
             if (!isVEenabled) {
                 option.target.remove();
             }
