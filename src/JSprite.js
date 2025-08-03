@@ -318,40 +318,10 @@ function renderSpriteElement() {
                 sprite.css({ "background-image": "url(" + url + ")" });
             }
 
-            let wrapper
-            if (option.text) {
-                var spriteText = $("<span/>", { "class": "sprite-text", "text": option.text });
-                wrapper = $('<span class="nowrap"/>')
-                wrapper.append(sprite)
-                wrapper.append(spriteText)
-            }
-
-            if (option.text) {
-                if (isVEenabled) {
-                    option.target.empty();
-                    option.target.append(wrapper);
-                    option.target.css({ width: "auto", height: "auto" });
-                    option.target.attr("data-done", "");
-                } else {
-                    option.target.after(wrapper);
-                }
-
-            } else {
-                if (isVEenabled) {
-                    option.target.empty();
-                    option.target.append(sprite);
-                    option.target.css({ width: "auto", height: "auto" });
-                    option.target.attr("data-done", "");
-                } else {
-                    option.target.after(sprite);
-                }
-            }
-
-            if (!isVEenabled) {
-                option.target.remove();
-            }
+            addSpriteText(sprite, isVEenabled)
         }
 
+        // IrregularFile or Unknown sprite
         else {
             var filename;
             var isExists = hasIrregularFiles;
@@ -372,6 +342,7 @@ function renderSpriteElement() {
                             "src": url,
                             "width": option.width * scale,
                             "height": option.height * scale,
+                            "class": "sprite"
                         });
 
                         if (!option.notip) {
@@ -386,33 +357,75 @@ function renderSpriteElement() {
                         option.target.empty();
                         option.target.append(sprite);
                         option.target.attr("data-done", "");
+                        addSpriteText(sprite)
                     } else {
-                        if (id && id != "blank" && id.length > 0) {
+                        if (id && id != "blank" && id.length > 0 && !option.notip) {
                             option.target
                                 .attr("data-mine-tooltip", "")
                                 .attr("title", option.title || option.id);
                         }
-                        var spr = $("<span/>", { "class": "sprite" });
-                        renderFallbackSprite(spr, option);
+                        var sprite = $("<span/>", { "class": "sprite" });
+                        renderFallbackSprite(sprite, option);
                         option.target.css({ width: "auto", height: "auto" });
                         option.target.empty();
-                        option.target.append(spr);
+                        option.target.append(sprite);
+                        addSpriteText(sprite, isVEenabled)
                     }
+
                     tooltipQueue();
                 });
 
             } else {
-                if (id && id != "blank" && id.length > 0) {
+                if (id && id != "blank" && id.length > 0 && !option.notip) {
                     option.target
                         .attr("data-mine-tooltip", "")
                         .attr("title", option.title || option.id);
                 }
-                var spr = $("<span/>", { "class": "sprite" });
-                renderFallbackSprite(spr, option);
+                var sprite = $("<span/>", { "class": "sprite" });
+                renderFallbackSprite(sprite, option);
                 option.target.css({ width: "auto", height: "auto" });
                 option.target.empty();
-                option.target.append(spr);
+                option.target.append(sprite);
+                addSpriteText(sprite, isVEenabled)
             }
+        }
+    }
+
+    function addSpriteText(spriteElm, isVEenabled) {
+        let wrapper
+        if (option.text) {
+            var spriteText = $("<span/>", {
+                "class": "sprite-text",
+                "text": option.text
+            });
+            wrapper = $('<span class="nowrap"/>')
+            wrapper.append(spriteElm)
+            wrapper.append(spriteText)
+        }
+
+        if (option.text) {
+            if (isVEenabled) {
+                option.target.empty();
+                option.target.append(wrapper);
+                option.target.css({ width: "auto", height: "auto" });
+                option.target.attr("data-done", "");
+            } else {
+                option.target.after(wrapper);
+            }
+
+        } else {
+            if (isVEenabled) {
+                option.target.empty();
+                option.target.append(spriteElm);
+                option.target.css({ width: "auto", height: "auto" });
+                option.target.attr("data-done", "");
+            } else {
+                option.target.after(spriteElm);
+            }
+        }
+
+        if (!isVEenabled) {
+            option.target.remove();
         }
     }
 
