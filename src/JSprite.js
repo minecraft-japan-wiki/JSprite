@@ -359,7 +359,7 @@ function renderSpriteElement() {
                         option.target.attr("data-done", "");
                         addSpriteText(sprite)
                     } else {
-                        if (id && id != "blank" && id.length > 0) {
+                        if (id && id != "blank" && id.length > 0 && !option.notip) {
                             option.target
                                 .attr("data-mine-tooltip", "")
                                 .attr("title", option.title || option.id);
@@ -376,7 +376,7 @@ function renderSpriteElement() {
                 });
 
             } else {
-                if (id && id != "blank" && id.length > 0) {
+                if (id && id != "blank" && id.length > 0 && !option.notip) {
                     option.target
                         .attr("data-mine-tooltip", "")
                         .attr("title", option.title || option.id);
@@ -394,7 +394,10 @@ function renderSpriteElement() {
     function addSpriteText(spriteElm, isVEenabled) {
         let wrapper
         if (option.text) {
-            var spriteText = $("<span/>", { "class": "sprite-text", "text": option.text });
+            var spriteText = $("<span/>", {
+                "class": "sprite-text",
+                "text": option.text
+            });
             wrapper = $('<span class="nowrap"/>')
             wrapper.append(spriteElm)
             wrapper.append(spriteText)
