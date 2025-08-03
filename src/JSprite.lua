@@ -97,10 +97,6 @@ function p.base(f)
 		sprite:attr('data-title', tostring(args['title']))
 	end
 
-	if args['text'] then
-		sprite:attr('data-text', tostring(args['text']))
-	end
-
 	if args['notip'] then
 		sprite:attr('data-notip', tostring(args['notip']))
 	end
@@ -133,6 +129,14 @@ function p.base(f)
 				break
 			end
 		end
+	end
+
+	if args['text'] then
+		local wrapper = mw.html.create("span"):addClass("nowrap")
+		local spriteText = mw.html.create("span"):addClass("sprite-text"):wikitext(args['text'])
+		wrapper:node(sprite)
+		wrapper:node(spriteText)
+		sprite = wrapper
 	end
 
 	if args['link'] then
