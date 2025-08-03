@@ -152,9 +152,7 @@ function renderSpriteElement() {
         sheet: $(this).attr("data-sheet"),
         id: $(this).attr("data-id"),
         scale: $(this).attr("data-scale"),
-        link: $(this).attr("data-link"),
         title: $(this).attr("data-title"),
-        text: $(this).attr("data-text"),
         image: $(this).attr("data-image"),
         "sheet-width": $(this).attr("data-sheet-width") || $(this).attr("data-sheetsize"),
         "sheet-height": $(this).attr("data-sheet-height"),
@@ -318,7 +316,7 @@ function renderSpriteElement() {
                 sprite.css({ "background-image": "url(" + url + ")" });
             }
 
-            addSpriteText(sprite, isVEenabled)
+            finalizeSprite(sprite, isVEenabled)
         }
 
         // IrregularFile or Unknown sprite
@@ -357,7 +355,7 @@ function renderSpriteElement() {
                         option.target.empty();
                         option.target.append(sprite);
                         option.target.attr("data-done", "");
-                        addSpriteText(sprite)
+                        finalizeSprite(sprite)
                     } else {
                         if (id && id != "blank" && id.length > 0 && !option.notip) {
                             option.target
@@ -369,7 +367,7 @@ function renderSpriteElement() {
                         option.target.css({ width: "auto", height: "auto" });
                         option.target.empty();
                         option.target.append(sprite);
-                        addSpriteText(sprite, isVEenabled)
+                        finalizeSprite(sprite, isVEenabled)
                     }
 
                     tooltipQueue();
@@ -386,42 +384,19 @@ function renderSpriteElement() {
                 option.target.css({ width: "auto", height: "auto" });
                 option.target.empty();
                 option.target.append(sprite);
-                addSpriteText(sprite, isVEenabled)
+                finalizeSprite(sprite, isVEenabled)
             }
         }
     }
 
-    function addSpriteText(spriteElm, isVEenabled) {
-        let wrapper
-        if (option.text) {
-            var spriteText = $("<span/>", {
-                "class": "sprite-text",
-                "text": option.text
-            });
-            wrapper = $('<span class="nowrap"/>')
-            wrapper.append(spriteElm)
-            wrapper.append(spriteText)
-        }
-
-        if (option.text) {
-            if (isVEenabled) {
-                option.target.empty();
-                option.target.append(wrapper);
-                option.target.css({ width: "auto", height: "auto" });
-                option.target.attr("data-done", "");
-            } else {
-                option.target.after(wrapper);
-            }
-
+    function finalizeSprite(spriteElm, isVEenabled) {
+        if (isVEenabled) {
+            option.target.empty();
+            option.target.append(spriteElm);
+            option.target.css({ width: "auto", height: "auto" });
+            option.target.attr("data-done", "");
         } else {
-            if (isVEenabled) {
-                option.target.empty();
-                option.target.append(spriteElm);
-                option.target.css({ width: "auto", height: "auto" });
-                option.target.attr("data-done", "");
-            } else {
-                option.target.after(spriteElm);
-            }
+            option.target.after(spriteElm);
         }
 
         if (!isVEenabled) {
