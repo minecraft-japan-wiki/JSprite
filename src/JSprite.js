@@ -346,7 +346,7 @@ function renderSpriteElement() {
                         if (!option.notip) {
                             sprite.attr({
                                 "data-mine-tooltip": "",
-                                "title": option.title || option.nocap ? option.id : capitalize(option.id)
+                                "title": option.title || (option.nocap ? option.id : capitalize(option.id))
                             });
                         }
                         //option.target.after(sprite);
