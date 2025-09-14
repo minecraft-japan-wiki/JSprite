@@ -66,10 +66,6 @@ function p.base(f)
 		sprite:attr('data-scale', args['scale'])
 	end
 
-	if args['link'] then
-		sprite:attr('data-link', tostring(args['link']))
-	end
-
 	------ Appendings ------
 	if args['sheet'] == 'InvSprite' then
 		local name = args[1] or args['name']
@@ -140,6 +136,7 @@ function p.base(f)
 	end
 
 	if args['link'] then
+		sprite:attr('data-link', tostring(args['link']))
 		return mw.ustring.format("[[%s|%s]]", args['link'], tostring(sprite))
 	else
 		return tostring(sprite)
@@ -163,6 +160,15 @@ function p.doc(f)
 	end
 
 	return ''
+end
+
+function p.tile(f)
+	local args = f
+	if f == mw.getCurrentFrame() then
+		args = require('Module:ProcessArgs').merge(true)
+	else
+		f = mw.getCurrentFrame()
+	end
 end
 
 return p

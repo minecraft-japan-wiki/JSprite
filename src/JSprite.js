@@ -213,6 +213,12 @@ function renderSpriteElement() {
                     id = id.replaceAll(" ", "-");
                     if (data.Irregular_files.hasOwnProperty(id)) {
                         hasIrregularFiles = true;
+                    } else {
+                        let capId = capitalize(option.id)
+                        if (data.Irregular_files.hasOwnProperty(capId)) {
+                            hasIrregularFiles = true;
+                            id = capId
+                        }
                     }
                 }
             }
@@ -224,6 +230,12 @@ function renderSpriteElement() {
                 id = id.toLowerCase();
                 if (!data.ids[id]) {
                     id = id.replaceAll(" ", "-");
+                    if (!data.ids[id]) {
+                        let capId = capitalize(option.id)
+                        if (data.ids[capId]) {
+                            id = capId
+                        }
+                    }
                 }
             }
         }
