@@ -140,6 +140,50 @@ function renderAllSpriteElements() {
     }
 }
 
+/**
+ * Retrieve tooltip parameters from a dictionary and convert them to a JSON string.
+ * @param {Record<string,any>} option 
+ * @returns {string}
+ */
+function getTooltipParameters(option) {
+    let tooltipopt = "";
+    if (option.rarity || option.description) {
+        var obj = {};
+        if (option.rarity) {
+            obj['class'] = "minetext-" + option.rarity;
+        }
+        if (!option.description2) {
+            if (option.description) {
+                obj.description = option.description;
+                if (option.posi) {
+                    obj.posi = 1;
+                }
+                if (option.nega) {
+                    obj.nega = 1;
+                }
+            }
+        } else {
+            obj.description = [];
+            var i = 1, d;
+            while (option['description' + (i > 1 && i || '')]) {
+                var item = {};
+                d = (i > 1 && i || '');
+                item.description = option['description' + d];
+                if (option['posi' + d]) {
+                    item.posi = option['posi' + d];
+                }
+                if (option['nega' + d]) {
+                    item.nega = option['nega' + d];
+                }
+                obj.description.push(item);
+                i++;
+            }
+        }
+        tooltipopt = JSON.stringify(obj);
+    }
+    return tooltipopt
+}
+
 
 /**
  * Renders a single `.jsprite` element based on its `data-*` attributes and sprite sheet metadata.
@@ -227,13 +271,18 @@ function renderSpriteElement() {
         if (!hasIrregularFiles) {
             id = option.id;
             if (id && !data.ids[id]) {
-                id = id.toLowerCase();
-                if (!data.ids[id]) {
-                    id = id.replaceAll(" ", "-");
+                let _id = id.replaceAll(" ", "-");
+                if (data.ids[_id]) {
+                    id = _id
+                } else {
+                    id = id.toLowerCase();
                     if (!data.ids[id]) {
-                        let capId = capitalize(option.id)
-                        if (data.ids[capId]) {
-                            id = capId
+                        id = id.replaceAll(" ", "-");
+                        if (!data.ids[id]) {
+                            let capId = capitalize(option.id)
+                            if (data.ids[capId]) {
+                                id = capId
+                            }
                         }
                     }
                 }
@@ -262,41 +311,7 @@ function renderSpriteElement() {
                 });
 
             if (!option.notip) {
-                var tooltipopt = "";
-                if (option.rarity || option.description) {
-                    var obj = {};
-                    if (option.rarity) {
-                        obj['class'] = "minetext-" + option.rarity;
-                    }
-                    if (!option.description2) {
-                        if (option.description) {
-                            obj.description = option.description;
-                            if (option.posi) {
-                                obj.posi = 1;
-                            }
-                            if (option.nega) {
-                                obj.nega = 1;
-                            }
-                        }
-                    } else {
-                        obj.description = [];
-                        var i = 1, d;
-                        while (option['description' + (i > 1 && i || '')]) {
-                            var item = {};
-                            d = (i > 1 && i || '');
-                            item.description = option['description' + d];
-                            if (option['posi' + d]) {
-                                item.posi = option['posi' + d];
-                            }
-                            if (option['nega' + d]) {
-                                item.nega = option['nega' + d];
-                            }
-                            obj.description.push(item);
-                            i++;
-                        }
-                    }
-                    tooltipopt = JSON.stringify(obj);
-                }
+                const tooltipopt = getTooltipParameters(option)
 
                 sprite.attr({
                     "data-mine-tooltip": tooltipopt,
@@ -387,9 +402,13 @@ function renderSpriteElement() {
 
             } else {
                 if (id && id != "blank" && id.length > 0 && !option.notip) {
-                    option.target
-                        .attr("data-mine-tooltip", "")
-                        .attr("title", option.title || option.id);
+                    if (!option.notip) {
+                        const tooltipopt = getTooltipParameters(option)
+
+                        option.target
+                            .attr("data-mine-tooltip", tooltipopt)
+                            .attr("title", option.title || option.id);
+                    }
                 }
                 var sprite = $("<span/>", { "class": "sprite" });
                 renderFallbackSprite(sprite, option);
