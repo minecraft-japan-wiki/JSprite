@@ -150,7 +150,7 @@ function getTooltipParameters(option) {
     if (option.rarity || option.description) {
         var obj = {};
         if (option.rarity) {
-            obj['class'] = "minetext-" + option.rarity;
+            obj.rarity = option.rarity;
         }
         if (!option.description2) {
             if (option.description) {
@@ -191,7 +191,7 @@ function getTooltipParameters(option) {
  * @returns {void}
  */
 function renderSpriteElement() {
-    var option = {
+    let option = {
         target: $(this),
         sheet: $(this).attr("data-sheet"),
         id: $(this).attr("data-id"),
@@ -212,7 +212,7 @@ function renderSpriteElement() {
     };
 
     if ($(this).attr("data-description2")) {
-        var i = 2;
+        let i = 2;
         while ($(this).attr("data-description" + i)) {
             option['description' + i] = $(this).attr("data-description" + i);
             option['posi' + i] = $(this).attr("data-posi" + i);
@@ -222,7 +222,7 @@ function renderSpriteElement() {
     }
 
     if (JSONData.hasOwnProperty(option.sheet)) {
-        var data = JSONData[option.sheet];
+        let data = JSONData[option.sheet];
         makeSprite(data, option);
     }
 
@@ -231,7 +231,7 @@ function renderSpriteElement() {
         if (data.ids === undefined) data.ids = {};
         if (option.target && option.target.attr("data-done") !== undefined) return;
 
-        var isVEenabled = (window.ve && ve.init && ve.init.target && ve.init.target.active);
+        const isVEenabled = (window.ve && ve.init && ve.init.target && ve.init.target.active);
 
         data.settings["sheet-width"] = data.settings["sheet-width"] || data.settings.sheetsize || 256;
         data.settings.width = data.settings.width || data.settings.size || 16;
@@ -242,28 +242,35 @@ function renderSpriteElement() {
             option[key] = option[key] || data.settings[key];
         });
 
-        var scale = option.scale || 1;
-        var id = option.id;
+        const scale = option.scale || 1;
+        let id = option.id;
         let hasIrregularFiles = false;
 
         if (id && data.hasOwnProperty("Irregular_files")) {
             if (data.Irregular_files.hasOwnProperty(id)) {
                 hasIrregularFiles = true;
             } else {
-                id = id.toLowerCase();
-                if (data.Irregular_files.hasOwnProperty(id)) {
+                let _id = id.replaceAll(" ", "-");
+                if (data.Irregular_files.hasOwnProperty(_id)) {
+                    id = _id;
                     hasIrregularFiles = true;
                 } else {
-                    id = id.replaceAll(" ", "-");
+                    id = id.toLowerCase();
                     if (data.Irregular_files.hasOwnProperty(id)) {
                         hasIrregularFiles = true;
                     } else {
-                        let capId = capitalize(option.id)
-                        if (data.Irregular_files.hasOwnProperty(capId)) {
+                        id = id.replaceAll(" ", "-");
+                        if (data.Irregular_files.hasOwnProperty(id)) {
                             hasIrregularFiles = true;
-                            id = capId
+                        } else {
+                            let capId = capitalize(option.id);
+                            if (data.Irregular_files.hasOwnProperty(capId)) {
+                                hasIrregularFiles = true;
+                                id = capId;
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -291,19 +298,19 @@ function renderSpriteElement() {
 
         if (!id) id = "blank"
         if (data.ids[id] && !hasIrregularFiles) {
+            option = $.extend({}, data.ids[id], option)
             if (data.hasOwnProperty("appendings")) {
                 option = $.extend({}, data.appendings[id] || {}, option);
             }
 
-            var pos = data.ids[id].pos - 1;
-            var holizontal_count = option["sheet-width"] / option.width;
-
-            var position = {
+            const pos = data.ids[id].pos - 1;
+            const holizontal_count = option["sheet-width"] / option.width;
+            const position = {
                 x: (pos % holizontal_count) * option.width,
                 y: Math.floor(pos / holizontal_count) * option.height
             };
 
-            var sprite =
+            let sprite =
                 $("<span/>", {
                     "class": "sprite"
                 }).css({
@@ -331,7 +338,7 @@ function renderSpriteElement() {
                 //クラス定義を使うべき
                 sprite.addClass(data.settings.classname);
             } else {
-                var url = data.settings.image;
+                let url = data.settings.image;
                 if (option.image) {
                     url = option.image;
                 }
@@ -348,31 +355,49 @@ function renderSpriteElement() {
 
         // IrregularFile or Unknown sprite
         else {
-            var filename;
-            var isExists = hasIrregularFiles;
+            let filename;
+            let isExists = hasIrregularFiles;
             if (isExists) {
-                filename = data.Irregular_files[id];
+                if (typeof data.Irregular_files[id] === "string") {
+                    filename = data.Irregular_files[id]
+                } else if (
+                    typeof data.Irregular_files[id] === "object" &&
+                    data.Irregular_files[id].hasOwnProperty("image") &&
+                    typeof data.Irregular_files[id].image === "string"
+                ) {
+                    option = $.extend({}, option, data.Irregular_files[id])
+                    filename = data.Irregular_files[id].image
+                }
             } else {
-                var title = new mw.Title(option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get('wgNamespaceIds').file);
+                const title = new mw.Title(option.sheet + "_" + id.replaceAll(" ", "_") + ".png", mw.config.get('wgNamespaceIds').file);
                 isExists = title.exists();
                 if (isExists) {
                     filename = title.getPrefixedText();
                 }
             }
 
-            if (isExists) {
+            if (isExists && filename) {
                 getURL(filename).then(function (url) {
                     if (url) {
-                        var sprite = $("<img>", {
+                        let sprite = $("<img>", {
                             "src": url,
                             "width": option.width * scale,
                             "height": option.height * scale,
                             "class": "sprite"
                         });
 
+                        if (
+                            typeof data.Irregular_files[id] === "object" &&
+                            data.Irregular_files[id].hasOwnProperty("classname") &&
+                            typeof data.Irregular_files[id].classname === "string"
+                        ) {
+                            sprite.addClass(data.Irregular_files[id].classname);
+                        }
+
                         if (!option.notip) {
+                            const tooltipopt = getTooltipParameters(option)
                             sprite.attr({
-                                "data-mine-tooltip": "",
+                                "data-mine-tooltip": tooltipopt,
                                 "title": option.title || (option.nocap ? option.id : capitalize(option.id))
                             });
                         }
@@ -385,12 +410,14 @@ function renderSpriteElement() {
                         finalizeSprite(sprite)
                     } else {
                         if (id && id != "blank" && id.length > 0 && !option.notip) {
+                            const tooltipopt = getTooltipParameters(option)
                             option.target
-                                .attr("data-mine-tooltip", "")
+                                .attr("data-mine-tooltip", tooltipopt)
                                 .attr("title", option.title || option.id);
                         }
-                        var sprite = $("<span/>", { "class": "sprite" });
+                        let sprite = $("<span/>", { "class": "sprite" });
                         renderFallbackSprite(sprite, option);
+
                         option.target.css({ width: "auto", height: "auto" });
                         option.target.empty();
                         option.target.append(sprite);
@@ -402,6 +429,7 @@ function renderSpriteElement() {
 
             } else {
                 if (id && id != "blank" && id.length > 0 && !option.notip) {
+                    option = $.extend({}, data.ids[id] || {}, option)
                     if (!option.notip) {
                         const tooltipopt = getTooltipParameters(option)
 
@@ -410,7 +438,7 @@ function renderSpriteElement() {
                             .attr("title", option.title || option.id);
                     }
                 }
-                var sprite = $("<span/>", { "class": "sprite" });
+                let sprite = $("<span/>", { "class": "sprite" });
                 renderFallbackSprite(sprite, option);
                 option.target.css({ width: "auto", height: "auto" });
                 option.target.empty();
@@ -631,32 +659,44 @@ function createDocument() {
     // Irregular_files
     if (data.Irregular_files) {
         Object.keys(data.Irregular_files).sort().forEach(function (key) {
+            let image
+            if (typeof data.Irregular_files[key] === "string") {
+                image = data.Irregular_files[key]
+            } else if (
+                typeof data.Irregular_files[key] === "object" &&
+                data.Irregular_files[key].hasOwnProperty("image") &&
+                typeof data.Irregular_files[key].image === "string"
+            ) {
+                image = data.Irregular_files[key].image
+            }
 
-            var sprite_box = $("<li />", { "class": "spritedoc-box" }).appendTo(sections[999]);
-            var sprite = $("<span />", { "class": "sprite " });
+            if (image) {
+                var sprite_box = $("<li />", { "class": "spritedoc-box" }).appendTo(sections[999]);
+                var sprite = $("<span />", { "class": "sprite " });
 
-            sprite.addClass(data.settings.classname);
+                sprite.addClass(data.settings.classname);
 
-            sprite_box.append(
-                $("<div />", { "class": "spritedoc-image" }).append(sprite),
-                $("<ul />", { "class": "spritedoc-names" })
-            );
+                sprite_box.append(
+                    $("<div />", { "class": "spritedoc-image" }).append(sprite),
+                    $("<ul />", { "class": "spritedoc-names" })
+                );
 
-            var spritenames = sprite_box.find("ul");
-            var codeElm = $("<code />", { "text": (sheet !== 'InvSprite' ? key : capitalize(key)) });
-            spritenames.append(
-                $("<li />", { "class": "spritedoc-name" }).append(
-                    codeElm
-                )
-            );
+                var spritenames = sprite_box.find("ul");
+                var codeElm = $("<code />", { "text": (sheet !== 'InvSprite' ? key : capitalize(key)) });
+                spritenames.append(
+                    $("<li />", { "class": "spritedoc-name" }).append(
+                        codeElm
+                    )
+                );
 
-            getURL(data.Irregular_files[key]).then(function (url) {
-                if (url) {
-                    sprite.css({ "background-image": "url(" + url + ")" });
-                } else {
-                    renderFallbackSprite(sprite, data.settings);
-                }
-            });
+                getURL(image).then(function (url) {
+                    if (url) {
+                        sprite.css({ "background-image": "url(" + url + ")" });
+                    } else {
+                        renderFallbackSprite(sprite, data.settings);
+                    }
+                });
+            }
 
         });
     }
